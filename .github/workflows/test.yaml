@@ -2,6 +2,8 @@ name: test
 
 on:
   push:
+    branches:
+      - '!main'
   pull_request:
   workflow_call:
 
@@ -16,11 +18,11 @@ jobs:
             with:
               fetch-depth: 0
           -
-            name: Set up Go
+            name: Setup
             uses: actions/setup-go@v4
             with:
               go-version: '>=1.21'
 
           - 
-            name: Run Tests
+            name: Test
             run: go test ./...
