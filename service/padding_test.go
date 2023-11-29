@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/eljamo/libpass/config"
+	"github.com/eljamo/libpass/v2/config"
 )
 
 func TestNewPaddingService(t *testing.T) {

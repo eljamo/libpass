@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/eljamo/libpass/config"
+	"github.com/eljamo/libpass/v2/config"
 )
 
 //go:embed preset/* word_list/*
