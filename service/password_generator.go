@@ -20,7 +20,7 @@ type DefaultPasswordGeneratorService struct {
 	wordListSvc    WordListService
 }
 
-func NewPasswordGeneratorService(
+func NewCustomPasswordGeneratorService(
 	cfg *config.Config,
 	transformerSvc TransformerService,
 	separatorSvc SeparatorService,
@@ -39,6 +39,40 @@ func NewPasswordGeneratorService(
 		paddingSvc,
 		wordListSvc,
 	}, nil
+}
+
+func NewPasswordGeneratorService(
+	cfg *config.Config,
+) (*DefaultPasswordGeneratorService, error) {
+
+	rngs := NewRNGService()
+	wls, err := NewWordListService(cfg, rngs)
+	if err != nil {
+		return nil, err
+	}
+
+	ts, err := NewTransformerService(cfg, rngs)
+	if err != nil {
+		return nil, err
+	}
+
+	ss, err := NewSeparatorService(cfg, rngs)
+	if err != nil {
+		return nil, err
+	}
+
+	ps, err := NewPaddingService(cfg, rngs)
+	if err != nil {
+		return nil, err
+	}
+
+	return NewCustomPasswordGeneratorService(
+		cfg,
+		ts,
+		ss,
+		ps,
+		wls,
+	)
 }
 
 func (s *DefaultPasswordGeneratorService) Generate() ([]string, error) {

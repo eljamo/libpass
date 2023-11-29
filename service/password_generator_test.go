@@ -69,21 +69,21 @@ func TestNewPasswordGeneratorService(t *testing.T) {
 	t.Run("Valid Configuration", func(t *testing.T) {
 		t.Parallel()
 		cfg := &config.Config{NumPasswords: 1}
-		service, err := NewPasswordGeneratorService(cfg, &mockTransformerService{}, &mockSeparatorService{}, &mockPaddingService{}, &mockWordListService{})
+		service, err := NewCustomPasswordGeneratorService(cfg, &mockTransformerService{}, &mockSeparatorService{}, &mockPaddingService{}, &mockWordListService{})
 		if err != nil {
-			t.Errorf("NewPasswordGeneratorService() with valid config returned error: %v, want no error", err)
+			t.Errorf("NewCustomPasswordGeneratorService() with valid config returned error: %v, want no error", err)
 		}
 		if service == nil {
-			t.Errorf("NewPasswordGeneratorService() with valid config returned nil service")
+			t.Errorf("NewCustomPasswordGeneratorService() with valid config returned nil service")
 		}
 	})
 
 	t.Run("Invalid Configuration", func(t *testing.T) {
 		t.Parallel()
 		cfgInvalid := &config.Config{NumPasswords: 0}
-		_, errInvalid := NewPasswordGeneratorService(cfgInvalid, &mockTransformerService{}, &mockSeparatorService{}, &mockPaddingService{}, &mockWordListService{})
+		_, errInvalid := NewCustomPasswordGeneratorService(cfgInvalid, &mockTransformerService{}, &mockSeparatorService{}, &mockPaddingService{}, &mockWordListService{})
 		if errInvalid == nil {
-			t.Errorf("NewPasswordGeneratorService() with invalid config should return an error, got nil")
+			t.Errorf("NewCustomPasswordGeneratorService() with invalid config should return an error, got nil")
 		}
 	})
 }
