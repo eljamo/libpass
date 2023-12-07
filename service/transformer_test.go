@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/eljamo/libpass/v3/config"
+	"github.com/eljamo/libpass/v4/config"
 )
 
 func TestNewTransformerService(t *testing.T) {
@@ -136,6 +136,20 @@ func TestDefaultTransformerService_Transform(t *testing.T) {
 			rngSvc:   erngs,
 			input:    []string{"hello", "world"},
 			expected: []string{"HELLO", "WORLD"},
+		},
+		{
+			name:     "Empty slice",
+			cfg:      &config.Config{CaseTransform: config.Random},
+			rngSvc:   rngs,
+			input:    []string{},
+			expected: []string{},
+		},
+		{
+			name:     "Special characters slice",
+			cfg:      &config.Config{CaseTransform: config.Random},
+			rngSvc:   rngs,
+			input:    []string{"-", "&"},
+			expected: []string{"-", "&"},
 		},
 	}
 

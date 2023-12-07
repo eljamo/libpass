@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/eljamo/libpass/v3/config"
+	"github.com/eljamo/libpass/v4/config"
 )
 
 type mockTransformerService struct{}

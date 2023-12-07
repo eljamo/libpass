@@ -1,99 +1,130 @@
 package config
 
+// Config key
 const (
-	PresetKey   = "preset"
-	WordListKey = "word_list"
+	PresetKey   string = "preset"
+	WordListKey string = "word_list"
 )
 
+// Word list constant
 const (
-	All           = "ALL"
-	DoctorWho     = "DOCTOR_WHO"
-	EN            = "EN"
-	ENSmall       = "EN_SMALL"
-	GameOfThrones = "GAME_OF_THRONES"
-	HarryPotter   = "HARRY_POTTER"
-	MiddleEarth   = "MIDDLE_EARTH"
-	Pokemon       = "POKEMON"
-	StarTrek      = "STAR_TREK"
-	StarWars      = "STAR_WARS"
+	All           string = "ALL"
+	DoctorWho     string = "DOCTOR_WHO"
+	EN            string = "EN"
+	ENSmall       string = "EN_SMALL"
+	GameOfThrones string = "GAME_OF_THRONES"
+	HarryPotter   string = "HARRY_POTTER"
+	MiddleEarth   string = "MIDDLE_EARTH"
+	Pokemon       string = "POKEMON"
+	StarTrek      string = "STAR_TREK"
+	StarWars      string = "STAR_WARS"
 )
 
+// Preset constant
 const (
-	AppleID       = "APPLEID"
-	Default       = "DEFAULT"
-	NTLM          = "NTLM"
-	SecurityQ     = "SECURITYQ"
-	Web16         = "WEB16"
-	Web16XKPasswd = "WEB16_XKPASSWD"
-	Web32         = "WEB32"
-	WiFi          = "WIFI"
-	XKCD          = "XKCD"
-	XKCDXKPasswd  = "XKCD_XKPASSWD"
+	AppleID       string = "APPLEID"
+	Default       string = "DEFAULT"
+	NTLM          string = "NTLM"
+	SecurityQ     string = "SECURITYQ"
+	Web16         string = "WEB16"
+	Web16XKPasswd string = "WEB16_XKPASSWD"
+	Web32         string = "WEB32"
+	WiFi          string = "WIFI"
+	XKCD          string = "XKCD"
+	XKCDXKPasswd  string = "XKCD_XKPASSWD"
 )
 
+// Shared constant
 const (
-	None   = "NONE"
-	Random = "RANDOM"
+	None   string = "NONE"
+	Random string = "RANDOM"
 )
 
+// Case transform constant
 const (
-	Alternate                = "ALTERNATE"
-	AlternateLettercase      = "ALTERNATE_LETTERCASE"
-	Capitalise               = "CAPITALISE"
-	CapitaliseInvert         = "CAPITALISE_INVERT"
-	Invert                   = "INVERT" // Same as CapitaliseInvert but reserved to maintain compatibility with xkpasswd.net generated configs
-	Lower                    = "LOWER"
-	LowerVowelUpperConsonant = "LOWER_VOWEL_UPPER_CONSONANT"
-	Sentence                 = "SENTENCE"
-	Upper                    = "UPPER"
+	Alternate           string = "ALTERNATE"
+	AlternateLettercase string = "ALTERNATE_LETTERCASE"
+	Capitalise          string = "CAPITALISE"
+	CapitaliseInvert    string = "CAPITALISE_INVERT"
+	// The same as CapitaliseInvert but reserved to maintain compatibility with xkpasswd.net generated configs
+	Invert                   string = "INVERT"
+	Lower                    string = "LOWER"
+	LowerVowelUpperConsonant string = "LOWER_VOWEL_UPPER_CONSONANT"
+	Sentence                 string = "SENTENCE"
+	Upper                    string = "UPPER"
 )
 
+// Padding type constant
 const (
-	Adaptive = "ADAPTIVE"
-	Fixed    = "FIXED"
+	Adaptive string = "ADAPTIVE"
+	Fixed    string = "FIXED"
 )
 
+// A slice of available presets
 var Preset = []string{
 	Default, AppleID, NTLM, SecurityQ, Web16, Web16XKPasswd, Web32, WiFi, XKCD,
 	XKCDXKPasswd,
 }
 
+// A slice of special characters which can be used for padding and separator
+// characters
 var DefaultSpecialCharacters = []string{
 	"!", "@", "$", "%", "^", "&", "*", "-", "+", "=", ":", "|", "~", "?", "/", ".", ";",
 }
 
+// A slice of available options for padding
 var PaddingType = []string{Adaptive, Fixed, None}
 
+// A slice of available options for case transformation
 var TransformType = []string{
 	Alternate, AlternateLettercase, Capitalise, CapitaliseInvert, Invert, Lower,
 	LowerVowelUpperConsonant, None, Random, Sentence, Upper,
 }
 
+// A slice of available options for padding and separator characters
 var PaddingCharacterAndSeparatorCharacter = append([]string{Random}, DefaultSpecialCharacters...)
 
+// A slice of available word lists
 var WordLists = []string{
 	All, DoctorWho, EN, ENSmall, GameOfThrones, HarryPotter, MiddleEarth,
 	StarTrek, StarWars,
 }
 
 type Config struct {
-	CaseTransform           string   `key:"case_transform" json:"case_transform,omitempty"`
-	NumPasswords            int      `key:"num_passwords" json:"num_passwords,omitempty"`
-	NumWords                int      `key:"num_words" json:"num_words,omitempty"`
-	PaddingCharactersAfter  int      `key:"padding_characters_after" json:"padding_characters_after,omitempty"`
-	PaddingCharactersBefore int      `key:"padding_characters_before" json:"padding_characters_before,omitempty"`
-	PaddingCharacter        string   `key:"padding_character" json:"padding_character,omitempty"`
-	PaddingDigitsAfter      int      `key:"padding_digits_after" json:"padding_digits_after,omitempty"`
-	PaddingDigitsBefore     int      `key:"padding_digits_before" json:"padding_digits_before,omitempty"`
-	PaddingType             string   `key:"padding_type" json:"padding_type,omitempty"`
-	PadToLength             int      `key:"pad_to_length" json:"pad_to_length,omitempty"`
-	Preset                  string   `key:"preset" json:"preset,omitempty"`
-	SeparatorAlphabet       []string `key:"separator_alphabet" json:"separator_alphabet,omitempty"`
-	SeparatorCharacter      string   `key:"separator_character" json:"separator_character,omitempty"`
-	SymbolAlphabet          []string `key:"symbol_alphabet" json:"symbol_alphabet,omitempty"`
-	WordLengthMax           int      `key:"word_length_max" json:"word_length_max,omitempty"`
-	WordLengthMin           int      `key:"word_length_min" json:"word_length_min,omitempty"`
-	WordList                string   `key:"word_list" json:"word_list,omitempty"`
+	// The type of case transformation to apply to the words
+	CaseTransform string `key:"case_transform" json:"case_transform,omitempty"`
+	// The number of passwords to generate
+	NumPasswords int `key:"num_passwords" json:"num_passwords,omitempty"`
+	// The number of words to use in the password
+	NumWords int `key:"num_words" json:"num_words,omitempty"`
+	// The number of padding characters to add after the password
+	PaddingCharactersAfter int `key:"padding_characters_after" json:"padding_characters_after,omitempty"`
+	// The number of padding characters to add before the password
+	PaddingCharactersBefore int `key:"padding_characters_before" json:"padding_characters_before,omitempty"`
+	// The character to use for padding
+	PaddingCharacter string `key:"padding_character" json:"padding_character,omitempty"`
+	// Te number of padding digits to add after the password
+	PaddingDigitsAfter int `key:"padding_digits_after" json:"padding_digits_after,omitempty"`
+	// The number of padding digits to add before the password
+	PaddingDigitsBefore int `key:"padding_digits_before" json:"padding_digits_before,omitempty"`
+	// The type of padding to apply to the password
+	PaddingType string `key:"padding_type" json:"padding_type,omitempty"`
+	// The length to pad the password to
+	PadToLength int `key:"pad_to_length" json:"pad_to_length,omitempty"`
+	// The preset to use for generating the password
+	Preset string `key:"preset" json:"preset,omitempty"`
+	// The alphabet to use for the separator character when using a random character
+	SeparatorAlphabet []string `key:"separator_alphabet" json:"separator_alphabet,omitempty"`
+	// The character to use to separate the words
+	SeparatorCharacter string `key:"separator_character" json:"separator_character,omitempty"`
+	// The alphabet to use for the symbol padding character when random
+	SymbolAlphabet []string `key:"symbol_alphabet" json:"symbol_alphabet,omitempty"`
+	// The maximum length of a word to use in the password
+	WordLengthMax int `key:"word_length_max" json:"word_length_max,omitempty"`
+	// The minimum length of a word to use in the password
+	WordLengthMin int `key:"word_length_min" json:"word_length_min,omitempty"`
+	// The word list to use for generating the password
+	WordList string `key:"word_list" json:"word_list,omitempty"`
 }
 
 var WordListDescriptionMap = map[string]string{

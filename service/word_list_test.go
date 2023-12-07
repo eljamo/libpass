@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/eljamo/libpass/v3/config"
+	"github.com/eljamo/libpass/v4/config"
 )
 
 func TestNewWordListService(t *testing.T) {
@@ -15,22 +15,22 @@ func TestNewWordListService(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name:    "ValidConfig",
+			name:    "Valid Config",
 			cfg:     &config.Config{NumWords: 5, WordList: "EN_SMALL", WordLengthMin: 2, WordLengthMax: 10},
 			wantErr: false,
 		},
 		{
-			name:    "InvalidConfigWordLength",
+			name:    "Invalid Config - WordLength",
 			cfg:     &config.Config{NumWords: 5, WordList: "EN_SMALL", WordLengthMin: 15, WordLengthMax: 20},
 			wantErr: true,
 		},
 		{
-			name:    "InvalidConfigWordLengthMax",
+			name:    "Invalid Config - WordLengthMax",
 			cfg:     &config.Config{NumWords: 5, WordList: "EN_SMALL", WordLengthMin: 10, WordLengthMax: 2},
 			wantErr: true,
 		},
 		{
-			name:    "InvalidConfigNumWords",
+			name:    "Invalid Config - NumWords",
 			cfg:     &config.Config{NumWords: 1},
 			wantErr: true,
 		},

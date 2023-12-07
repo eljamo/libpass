@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/eljamo/libpass/v3/config"
+	"github.com/eljamo/libpass/v4/config"
 )
 
 func TestNewPaddingService(t *testing.T) {
@@ -19,8 +19,11 @@ func TestNewPaddingService(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name:    "Valid configuration",
-			cfg:     &config.Config{PaddingDigitsBefore: 2, PaddingDigitsAfter: 2, PaddingCharacter: "*", SymbolAlphabet: []string{"!", "@", "#", "$", "%"}, PaddingType: config.Fixed},
+			name: "Valid configuration",
+			cfg: &config.Config{
+				PaddingDigitsBefore: 2, PaddingDigitsAfter: 2, PaddingCharacter: "*",
+				SymbolAlphabet: []string{"!", "@", "#", "$", "%"}, PaddingType: config.Fixed,
+			},
 			wantErr: false,
 		},
 		{
@@ -215,6 +218,62 @@ func TestRemoveEdgeSeparatorCharacter(t *testing.T) {
 	t.Parallel()
 
 	cfg := &config.Config{SeparatorCharacter: "-"}
+
+	tests := []struct {
+		name     string
+		input    []string
+		expected []string
+	}{
+		{
+			name:     "no separator at edges",
+			input:    []string{"a", "b", "c"},
+			expected: []string{"a", "b", "c"},
+		},
+		{
+			name:     "separator at start",
+			input:    []string{"-", "a", "b", "c"},
+			expected: []string{"a", "b", "c"},
+		},
+		{
+			name:     "separator at end",
+			input:    []string{"a", "b", "c", "-"},
+			expected: []string{"a", "b", "c"},
+		},
+		{
+			name:     "separator at both ends",
+			input:    []string{"-", "a", "b", "c", "-"},
+			expected: []string{"a", "b", "c"},
+		},
+		{
+			name:     "empty input",
+			input:    []string{},
+			expected: []string{},
+		},
+		{
+			name:     "input with only separators",
+			input:    []string{"-", "-"},
+			expected: []string{},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			s := &DefaultPaddingService{cfg: cfg}
+			got := s.removeEdgeSeparatorCharacter(tt.input)
+			if !reflect.DeepEqual(got, tt.expected) {
+				t.Errorf("removeEdgeSeparatorCharacter() got = %v, expected %v", got, tt.expected)
+			}
+		})
+	}
+}
+
+func TestRemoveRandomEdgeSeparatorCharacter(t *testing.T) {
+	t.Parallel()
+
+	cfg := &config.Config{SeparatorCharacter: "RANDOM", SeparatorAlphabet: []string{"!", "-", "="}}
 
 	tests := []struct {
 		name     string
@@ -470,10 +529,7 @@ func TestAdaptive(t *testing.T) {
 
 			cfg.PadToLength = tt.padLen
 			s := &DefaultPaddingService{cfg: cfg}
-			got, err := s.adaptive(tt.pw, tt.char)
-			if err != nil {
-				t.Errorf("adaptive() error = %v", err)
-			}
+			got := s.adaptive(tt.pw, tt.char)
 
 			if got != tt.want {
 				t.Errorf("adaptive() got = %v, want %v", got, tt.want)

@@ -14,6 +14,10 @@ func (s *MockRNGService) Generate() (int, error) {
 	return 1, nil
 }
 
+func (s *MockRNGService) GenerateDigit() (int, error) {
+	return 1, nil
+}
+
 func (s *MockRNGService) GenerateSlice(length int) ([]int, error) {
 	return s.GenerateSliceWithMax(length, 2)
 }
@@ -34,6 +38,10 @@ func (s *MockEvenRNGService) GenerateWithMax(max int) (int, error) {
 }
 
 func (s *MockEvenRNGService) Generate() (int, error) {
+	return 2, nil
+}
+
+func (s *MockEvenRNGService) GenerateDigit() (int, error) {
 	return 2, nil
 }
 
@@ -180,4 +188,20 @@ func TestGenerateSlice(t *testing.T) {
 			t.Errorf("expected empty slice, got %d elements", len(slice))
 		}
 	})
+}
+
+func TestGenerateDigit(t *testing.T) {
+	t.Parallel()
+
+	rngSvc := NewRNGService()
+
+	for i := 0; i < 100; i++ {
+		digit, err := rngSvc.GenerateDigit()
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+		if digit < 0 || digit > 9 {
+			t.Errorf("generated digit is out of range: got %d, want 0-9", digit)
+		}
+	}
 }
