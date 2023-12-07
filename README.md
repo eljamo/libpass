@@ -2,6 +2,13 @@
 
 A Go library specifically designed for generating secure and memorable passwords. It serves as the backbone for [mempass](https://https://github.com/eljamo/mempass)
 
+
+## Install
+
+```
+go get github.com/eljamo/libpass/v4
+```
+
 ## Basic Usage
 
 ```
