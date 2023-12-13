@@ -1,4 +1,4 @@
-module github.com/eljamo/libpass/v4
+module github.com/eljamo/libpass/v5
 
 go 1.21.5
 

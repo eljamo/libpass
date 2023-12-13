@@ -4,7 +4,8 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/eljamo/libpass/v4/config"
+	"github.com/eljamo/libpass/v5/config"
+	"github.com/eljamo/libpass/v5/config/option"
 )
 
 func TestNewSeparatorService(t *testing.T) {
@@ -14,33 +15,33 @@ func TestNewSeparatorService(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		cfg     *config.Config
+		cfg     *config.Settings
 		wantErr bool
 	}{
 		{
 			name:    "Valid configuration",
-			cfg:     &config.Config{SeparatorCharacter: "*", SeparatorAlphabet: []string{"!", "@", "#", "$", "%"}},
+			cfg:     &config.Settings{SeparatorCharacter: "*", SeparatorAlphabet: []string{"!", "@", "#", "$", "%"}},
 			wantErr: false,
 		},
 		{
 			name:    "Invalid configuration - invalid separator character",
-			cfg:     &config.Config{SeparatorCharacter: "invalid"},
+			cfg:     &config.Settings{SeparatorCharacter: "invalid"},
 			wantErr: true,
 		},
 		{
 			name:    "Valid configuration - separator alphabet",
-			cfg:     &config.Config{SeparatorCharacter: config.Random, SeparatorAlphabet: []string{""}},
+			cfg:     &config.Settings{SeparatorCharacter: option.Random, SeparatorAlphabet: []string{""}},
 			wantErr: false,
 		},
 
 		{
 			name:    "Valid configuration - separator alphabet",
-			cfg:     &config.Config{SeparatorCharacter: config.Random, SeparatorAlphabet: []string{"a"}},
+			cfg:     &config.Settings{SeparatorCharacter: option.Random, SeparatorAlphabet: []string{"a"}},
 			wantErr: false,
 		},
 		{
 			name:    "Invalid configuration - empty separator alphabet",
-			cfg:     &config.Config{SeparatorCharacter: config.Random, SeparatorAlphabet: []string{"aaa"}},
+			cfg:     &config.Settings{SeparatorCharacter: option.Random, SeparatorAlphabet: []string{"aaa"}},
 			wantErr: true,
 		},
 	}
@@ -65,7 +66,7 @@ func TestSeparatorService_Separate(t *testing.T) {
 
 	tests := []struct {
 		name      string
-		cfg       *config.Config
+		cfg       *config.Settings
 		rngSvc    RNGService
 		input     []string
 		expected  []string
@@ -73,28 +74,28 @@ func TestSeparatorService_Separate(t *testing.T) {
 	}{
 		{
 			name:     "With fixed separator",
-			cfg:      &config.Config{SeparatorCharacter: "-"},
+			cfg:      &config.Settings{SeparatorCharacter: "-"},
 			rngSvc:   rngs,
 			input:    []string{"a", "b", "c"},
 			expected: []string{"-", "a", "-", "b", "-", "c", "-"},
 		},
 		{
 			name:     "With empty slice",
-			cfg:      &config.Config{SeparatorCharacter: "-"},
+			cfg:      &config.Settings{SeparatorCharacter: "-"},
 			rngSvc:   rngs,
 			input:    []string{},
 			expected: []string{"-"},
 		},
 		{
 			name:     "With random separator",
-			cfg:      &config.Config{SeparatorCharacter: config.Random, SeparatorAlphabet: []string{"!", "-", "="}},
+			cfg:      &config.Settings{SeparatorCharacter: option.Random, SeparatorAlphabet: []string{"!", "-", "="}},
 			rngSvc:   rngs,
 			input:    []string{"a", "b", "c"},
 			expected: []string{"-", "a", "-", "b", "-", "c", "-"},
 		},
 		{
 			name:     "With random separator with RNG returning a even number",
-			cfg:      &config.Config{SeparatorCharacter: config.Random, SeparatorAlphabet: []string{"!", "-", "="}},
+			cfg:      &config.Settings{SeparatorCharacter: option.Random, SeparatorAlphabet: []string{"!", "-", "="}},
 			rngSvc:   erngs,
 			input:    []string{"a", "b", "c"},
 			expected: []string{"=", "a", "=", "b", "=", "c", "="},

@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/eljamo/libpass/v4/config"
+	"github.com/eljamo/libpass/v5/config"
 )
 
 func TestNewWordListService(t *testing.T) {
@@ -11,27 +11,27 @@ func TestNewWordListService(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		cfg     *config.Config
+		cfg     *config.Settings
 		wantErr bool
 	}{
 		{
 			name:    "Valid Config",
-			cfg:     &config.Config{NumWords: 5, WordList: "EN_SMALL", WordLengthMin: 2, WordLengthMax: 10},
+			cfg:     &config.Settings{NumWords: 5, WordList: "EN_SMALL", WordLengthMin: 2, WordLengthMax: 10},
 			wantErr: false,
 		},
 		{
 			name:    "Invalid Config - WordLength",
-			cfg:     &config.Config{NumWords: 5, WordList: "EN_SMALL", WordLengthMin: 15, WordLengthMax: 20},
+			cfg:     &config.Settings{NumWords: 5, WordList: "EN_SMALL", WordLengthMin: 15, WordLengthMax: 20},
 			wantErr: true,
 		},
 		{
 			name:    "Invalid Config - WordLengthMax",
-			cfg:     &config.Config{NumWords: 5, WordList: "EN_SMALL", WordLengthMin: 10, WordLengthMax: 2},
+			cfg:     &config.Settings{NumWords: 5, WordList: "EN_SMALL", WordLengthMin: 10, WordLengthMax: 2},
 			wantErr: true,
 		},
 		{
 			name:    "Invalid Config - NumWords",
-			cfg:     &config.Config{NumWords: 1},
+			cfg:     &config.Settings{NumWords: 1},
 			wantErr: true,
 		},
 	}
@@ -52,7 +52,7 @@ func TestNewWordListService(t *testing.T) {
 func TestDefaultWordListService_GetWords(t *testing.T) {
 	t.Parallel()
 
-	cfg := &config.Config{NumWords: 5, WordList: "EN_SMALL", WordLengthMin: 2, WordLengthMax: 10}
+	cfg := &config.Settings{NumWords: 5, WordList: "EN_SMALL", WordLengthMin: 2, WordLengthMax: 10}
 	service, err := NewWordListService(cfg, &MockRNGService{})
 	if err != nil {
 		t.Fatalf("Failed to create WordListService: %v", err)

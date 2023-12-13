@@ -5,7 +5,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/eljamo/libpass/v4/config"
+	"github.com/eljamo/libpass/v5/config"
+	"github.com/eljamo/libpass/v5/config/option"
 )
 
 func TestNewTransformerService(t *testing.T) {
@@ -13,7 +14,7 @@ func TestNewTransformerService(t *testing.T) {
 
 	mockRNGService := &MockEvenRNGService{}
 
-	validTransformType := config.Upper
+	validTransformType := option.Upper
 	invalidTransformType := "invalid"
 
 	tests := []struct {
@@ -37,7 +38,7 @@ func TestNewTransformerService(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			cfg := &config.Config{CaseTransform: tt.caseTransform}
+			cfg := &config.Settings{CaseTransform: tt.caseTransform}
 			_, err := NewTransformerService(cfg, mockRNGService)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("NewTransformerService() error = %v, wantErr %v", err, tt.wantErr)
@@ -54,7 +55,7 @@ func TestDefaultTransformerService_Transform(t *testing.T) {
 
 	tests := []struct {
 		name      string
-		cfg       *config.Config
+		cfg       *config.Settings
 		rngSvc    RNGService
 		input     []string
 		expected  []string
@@ -62,91 +63,91 @@ func TestDefaultTransformerService_Transform(t *testing.T) {
 	}{
 		{
 			name:     "Alternate",
-			cfg:      &config.Config{CaseTransform: config.Alternate},
+			cfg:      &config.Settings{CaseTransform: option.Alternate},
 			rngSvc:   rngs,
 			input:    []string{"hello", "world"},
 			expected: []string{"hello", "WORLD"},
 		},
 		{
 			name:     "Alternate Lettercase",
-			cfg:      &config.Config{CaseTransform: config.AlternateLettercase},
+			cfg:      &config.Settings{CaseTransform: option.AlternateLettercase},
 			rngSvc:   rngs,
 			input:    []string{"hello", "world"},
 			expected: []string{"hElLo", "wOrLd"},
 		},
 		{
 			name:     "Capitalisation",
-			cfg:      &config.Config{CaseTransform: config.Capitalise},
+			cfg:      &config.Settings{CaseTransform: option.Capitalise},
 			rngSvc:   rngs,
 			input:    []string{"hello", "world"},
 			expected: []string{"Hello", "World"},
 		},
 		{
 			name:     "Capitalisation Inversed",
-			cfg:      &config.Config{CaseTransform: config.CapitaliseInvert},
+			cfg:      &config.Settings{CaseTransform: option.CapitaliseInvert},
 			rngSvc:   rngs,
 			input:    []string{"hello", "world"},
 			expected: []string{"hELLO", "wORLD"},
 		},
 		{
 			name:     "Inversion",
-			cfg:      &config.Config{CaseTransform: config.Invert},
+			cfg:      &config.Settings{CaseTransform: option.Invert},
 			rngSvc:   rngs,
 			input:    []string{"hello", "world"},
 			expected: []string{"hELLO", "wORLD"},
 		},
 		{
 			name:     "Lower",
-			cfg:      &config.Config{CaseTransform: config.Lower},
+			cfg:      &config.Settings{CaseTransform: option.Lower},
 			rngSvc:   rngs,
 			input:    []string{"HELLO", "WORLD"},
 			expected: []string{"hello", "world"},
 		},
 		{
 			name:     "Lower Vowel Upper Consonant",
-			cfg:      &config.Config{CaseTransform: config.LowerVowelUpperConsonant},
+			cfg:      &config.Settings{CaseTransform: option.LowerVowelUpperConsonant},
 			rngSvc:   rngs,
 			input:    []string{"hello", "world"},
 			expected: []string{"HeLLo", "WoRLD"},
 		},
 		{
 			name:     "Sentence",
-			cfg:      &config.Config{CaseTransform: config.Sentence},
+			cfg:      &config.Settings{CaseTransform: option.Sentence},
 			rngSvc:   rngs,
 			input:    []string{"hello", "world"},
 			expected: []string{"Hello", "world"},
 		},
 		{
 			name:     "Upper",
-			cfg:      &config.Config{CaseTransform: config.Upper},
+			cfg:      &config.Settings{CaseTransform: option.Upper},
 			rngSvc:   rngs,
 			input:    []string{"hello", "world"},
 			expected: []string{"HELLO", "WORLD"},
 		},
 		{
 			name:     "Random",
-			cfg:      &config.Config{CaseTransform: config.Random},
+			cfg:      &config.Settings{CaseTransform: option.Random},
 			rngSvc:   rngs,
 			input:    []string{"hello", "world"},
 			expected: []string{"hello", "world"},
 		},
 		{
 			name:     "Random with even RNG",
-			cfg:      &config.Config{CaseTransform: config.Random},
+			cfg:      &config.Settings{CaseTransform: option.Random},
 			rngSvc:   erngs,
 			input:    []string{"hello", "world"},
 			expected: []string{"HELLO", "WORLD"},
 		},
 		{
 			name:     "Empty slice",
-			cfg:      &config.Config{CaseTransform: config.Random},
+			cfg:      &config.Settings{CaseTransform: option.Random},
 			rngSvc:   rngs,
 			input:    []string{},
 			expected: []string{},
 		},
 		{
 			name:     "Special characters slice",
-			cfg:      &config.Config{CaseTransform: config.Random},
+			cfg:      &config.Settings{CaseTransform: option.Random},
 			rngSvc:   rngs,
 			input:    []string{"-", "&"},
 			expected: []string{"-", "&"},
@@ -180,16 +181,16 @@ func TestDefaultTransformerService_Validate(t *testing.T) {
 	t.Parallel()
 
 	validCaseTransforms := []string{
-		config.Alternate,
-		config.AlternateLettercase,
-		config.Capitalise,
-		config.CapitaliseInvert,
-		config.Invert,
-		config.Lower,
-		config.LowerVowelUpperConsonant,
-		config.Random,
-		config.Upper,
-		config.None,
+		option.Alternate,
+		option.AlternateLettercase,
+		option.Capitalise,
+		option.CapitaliseInvert,
+		option.Invert,
+		option.Lower,
+		option.LowerVowelUpperConsonant,
+		option.Random,
+		option.Upper,
+		option.None,
 	}
 
 	for _, validTransform := range validCaseTransforms {
@@ -198,7 +199,7 @@ func TestDefaultTransformerService_Validate(t *testing.T) {
 			t.Parallel()
 
 			cfg := DefaultTransformerService{
-				cfg: &config.Config{CaseTransform: validTransform},
+				cfg: &config.Settings{CaseTransform: validTransform},
 			}
 			if err := cfg.validate(); err != nil {
 				t.Errorf("validate() with valid case transform %s returned error: %v", validTransform, err)
@@ -210,7 +211,7 @@ func TestDefaultTransformerService_Validate(t *testing.T) {
 		t.Parallel()
 
 		cfg := DefaultTransformerService{
-			cfg: &config.Config{CaseTransform: "invalid_case_transform"},
+			cfg: &config.Settings{CaseTransform: "invalid_case_transform"},
 		}
 		if err := cfg.validate(); err == nil {
 			t.Error("validate() with invalid case transform did not return an error")

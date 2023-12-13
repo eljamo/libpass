@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/eljamo/libpass/v4/config"
+	"github.com/eljamo/libpass/v5/config"
 )
 
 type mockTransformerService struct{}
@@ -68,7 +68,7 @@ func TestNewPasswordGeneratorService(t *testing.T) {
 
 	t.Run("Valid Configuration", func(t *testing.T) {
 		t.Parallel()
-		cfg := &config.Config{NumPasswords: 1}
+		cfg := &config.Settings{NumPasswords: 1}
 		service, err := NewCustomPasswordGeneratorService(cfg, &mockTransformerService{}, &mockSeparatorService{}, &mockPaddingService{}, &mockWordListService{})
 		if err != nil {
 			t.Errorf("NewCustomPasswordGeneratorService() with valid config returned error: %v, want no error", err)
@@ -80,7 +80,7 @@ func TestNewPasswordGeneratorService(t *testing.T) {
 
 	t.Run("Invalid Configuration", func(t *testing.T) {
 		t.Parallel()
-		cfgInvalid := &config.Config{NumPasswords: 0}
+		cfgInvalid := &config.Settings{NumPasswords: 0}
 		_, errInvalid := NewCustomPasswordGeneratorService(cfgInvalid, &mockTransformerService{}, &mockSeparatorService{}, &mockPaddingService{}, &mockWordListService{})
 		if errInvalid == nil {
 			t.Errorf("NewCustomPasswordGeneratorService() with invalid config should return an error, got nil")
@@ -97,7 +97,7 @@ func TestGenerate(t *testing.T) {
 		padding PaddingService,
 		wordList WordListService,
 	) *DefaultPasswordGeneratorService {
-		cfg := &config.Config{NumPasswords: 2, NumWords: 2}
+		cfg := &config.Settings{NumPasswords: 2, NumWords: 2}
 		return &DefaultPasswordGeneratorService{
 			cfg,
 			transformer,

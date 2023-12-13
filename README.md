@@ -6,7 +6,7 @@ A Go library specifically designed for generating secure and memorable passwords
 ## Install
 
 ```
-go get github.com/eljamo/libpass/v4
+go get github.com/eljamo/libpass/v5
 ```
 
 ## Basic Usage
@@ -17,15 +17,15 @@ package main
 import (
 	"fmt"
 
-	"github.com/eljamo/libpass/v4/config"
-	"github.com/eljamo/libpass/v4/service"
+	"github.com/eljamo/libpass/v5/config"
+	"github.com/eljamo/libpass/v5/service"
 )
 
 func main() {
 	specialCharacters := []string{
 		"!", "@", "$", "%", "^", "&", "*", "-", "+", "=", ":", "|", "~", "?", "/", ".", ";",
 	}
-	config := &config.Config{
+	config := &config.Settings{
 		WordList:                "EN",
 		NumPasswords:            3,
 		NumWords:                3,

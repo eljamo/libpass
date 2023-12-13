@@ -5,7 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/eljamo/libpass/v4/config"
+	"github.com/eljamo/libpass/v5/config"
+	"github.com/eljamo/libpass/v5/config/option"
 )
 
 func TestNewPaddingService(t *testing.T) {
@@ -15,56 +16,56 @@ func TestNewPaddingService(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		cfg     *config.Config
+		cfg     *config.Settings
 		wantErr bool
 	}{
 		{
 			name: "Valid configuration",
-			cfg: &config.Config{
+			cfg: &config.Settings{
 				PaddingDigitsBefore: 2, PaddingDigitsAfter: 2, PaddingCharacter: "*",
-				SymbolAlphabet: []string{"!", "@", "#", "$", "%"}, PaddingType: config.Fixed,
+				SymbolAlphabet: []string{"!", "@", "#", "$", "%"}, PaddingType: option.Fixed,
 			},
 			wantErr: false,
 		},
 		{
 			name:    "Invalid configuration - negative padding digits before and after",
-			cfg:     &config.Config{PaddingDigitsBefore: -1, PaddingDigitsAfter: -1},
+			cfg:     &config.Settings{PaddingDigitsBefore: -1, PaddingDigitsAfter: -1},
 			wantErr: true,
 		},
 		{
 			name:    "Invalid configuration - negative padding character before and after",
-			cfg:     &config.Config{PaddingType: config.Fixed, PaddingCharactersBefore: -1, PaddingCharactersAfter: -1},
+			cfg:     &config.Settings{PaddingType: option.Fixed, PaddingCharactersBefore: -1, PaddingCharactersAfter: -1},
 			wantErr: true,
 		},
 		{
 			name:    "Invalid configuration - invalid padding type",
-			cfg:     &config.Config{PaddingCharacter: "invalid", PaddingType: config.Fixed},
+			cfg:     &config.Settings{PaddingCharacter: "invalid", PaddingType: option.Fixed},
 			wantErr: true,
 		},
 		{
 			name:    "Invalid configuration - empty symbol alphabet",
-			cfg:     &config.Config{PaddingCharacter: config.Random, SymbolAlphabet: []string{}},
+			cfg:     &config.Settings{PaddingCharacter: option.Random, SymbolAlphabet: []string{}},
 			wantErr: true,
 		},
 		{
 			name:    "Valid configuration - symbol alphabet",
-			cfg:     &config.Config{PaddingCharacter: config.Random, SymbolAlphabet: []string{""}},
+			cfg:     &config.Settings{PaddingCharacter: option.Random, SymbolAlphabet: []string{""}},
 			wantErr: false,
 		},
 		{
 			name:    "Valid configuration - symbol alphabet",
-			cfg:     &config.Config{PaddingCharacter: config.Random, SymbolAlphabet: []string{"a"}},
+			cfg:     &config.Settings{PaddingCharacter: option.Random, SymbolAlphabet: []string{"a"}},
 			wantErr: false,
 		},
 
 		{
 			name:    "Invalid configuration - too large symbol alphabet element",
-			cfg:     &config.Config{PaddingCharacter: config.Random, SymbolAlphabet: []string{"aaa"}},
+			cfg:     &config.Settings{PaddingCharacter: option.Random, SymbolAlphabet: []string{"aaa"}},
 			wantErr: true,
 		},
 		{
 			name:    "Invalid configuration - invalid padding to length",
-			cfg:     &config.Config{PadToLength: -1, PaddingType: config.Adaptive},
+			cfg:     &config.Settings{PadToLength: -1, PaddingType: option.Adaptive},
 			wantErr: true,
 		},
 	}
@@ -84,11 +85,11 @@ func TestNewPaddingService(t *testing.T) {
 func TestPad(t *testing.T) {
 	t.Parallel()
 
-	cfg := &config.Config{
+	cfg := &config.Settings{
 		PaddingDigitsBefore:     2,
 		PaddingDigitsAfter:      2,
 		SeparatorCharacter:      "-",
-		PaddingType:             config.Fixed,
+		PaddingType:             option.Fixed,
 		PaddingCharactersBefore: 2,
 		PaddingCharactersAfter:  2,
 		PadToLength:             20,
@@ -147,7 +148,7 @@ func TestDigits(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			cfg := &config.Config{
+			cfg := &config.Settings{
 				PaddingDigitsBefore: tt.before,
 				PaddingDigitsAfter:  tt.after,
 			}
@@ -171,7 +172,7 @@ func TestDigits(t *testing.T) {
 func TestGenerateRandomDigits(t *testing.T) {
 	t.Parallel()
 
-	cfg := &config.Config{}
+	cfg := &config.Settings{}
 	tests := []struct {
 		name     string
 		count    int
@@ -217,7 +218,7 @@ func TestGenerateRandomDigits(t *testing.T) {
 func TestRemoveEdgeSeparatorCharacter(t *testing.T) {
 	t.Parallel()
 
-	cfg := &config.Config{SeparatorCharacter: "-"}
+	cfg := &config.Settings{SeparatorCharacter: "-"}
 
 	tests := []struct {
 		name     string
@@ -273,7 +274,7 @@ func TestRemoveEdgeSeparatorCharacter(t *testing.T) {
 func TestRemoveRandomEdgeSeparatorCharacter(t *testing.T) {
 	t.Parallel()
 
-	cfg := &config.Config{SeparatorCharacter: "RANDOM", SeparatorAlphabet: []string{"!", "-", "="}}
+	cfg := &config.Settings{SeparatorCharacter: "RANDOM", SeparatorAlphabet: []string{"!", "-", "="}}
 
 	tests := []struct {
 		name     string
@@ -333,7 +334,7 @@ func TestSymbols(t *testing.T) {
 
 	tests := []struct {
 		name       string
-		cfg        *config.Config
+		cfg        *config.Settings
 		pw         string
 		want       string
 		expectErr  bool
@@ -341,8 +342,8 @@ func TestSymbols(t *testing.T) {
 	}{
 		{
 			name: "fixed padding with specific character",
-			cfg: &config.Config{
-				PaddingType:             config.Fixed,
+			cfg: &config.Settings{
+				PaddingType:             option.Fixed,
 				PaddingCharacter:        "*",
 				PaddingCharactersBefore: 2,
 				PaddingCharactersAfter:  2,
@@ -353,8 +354,8 @@ func TestSymbols(t *testing.T) {
 		},
 		{
 			name: "adaptive padding to specific length",
-			cfg: &config.Config{
-				PaddingType:      config.Adaptive,
+			cfg: &config.Settings{
+				PaddingType:      option.Adaptive,
 				PaddingCharacter: "*",
 				PadToLength:      10,
 			},
@@ -363,17 +364,17 @@ func TestSymbols(t *testing.T) {
 		},
 		{
 			name: "no padding",
-			cfg: &config.Config{
-				PaddingType: config.None,
+			cfg: &config.Settings{
+				PaddingType: option.None,
 			},
 			pw:   "password",
 			want: "password",
 		},
 		{
 			name: "random padding character",
-			cfg: &config.Config{
-				PaddingType:             config.Fixed,
-				PaddingCharacter:        config.Random,
+			cfg: &config.Settings{
+				PaddingType:             option.Fixed,
+				PaddingCharacter:        option.Random,
 				PaddingCharactersBefore: 2,
 				PaddingCharactersAfter:  2,
 				PadToLength:             10,
@@ -462,7 +463,7 @@ func TestFixed(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			cfg := &config.Config{
+			cfg := &config.Settings{
 				PaddingCharactersBefore: tt.before,
 				PaddingCharactersAfter:  tt.after,
 			}
@@ -488,7 +489,7 @@ func TestFixed(t *testing.T) {
 func TestAdaptive(t *testing.T) {
 	t.Parallel()
 
-	cfg := &config.Config{
+	cfg := &config.Settings{
 		PadToLength: 10,
 	}
 
