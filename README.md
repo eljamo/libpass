@@ -1,6 +1,6 @@
 # libpass
 
-A Go library specifically designed for generating secure and memorable passwords. It serves as the backbone for [mempass](https://https://github.com/eljamo/mempass)
+A Go library specifically designed for generating secure and memorable passwords. It serves as the backbone for [mempass](https://github.com/eljamo/mempass)
 
 
 ## Install

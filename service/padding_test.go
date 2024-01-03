@@ -456,8 +456,6 @@ func TestFixed(t *testing.T) {
 		},
 	}
 
-	rngSvc := &MockEvenRNGService{}
-
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
@@ -467,7 +465,7 @@ func TestFixed(t *testing.T) {
 				PaddingCharactersBefore: tt.before,
 				PaddingCharactersAfter:  tt.after,
 			}
-			svc := &DefaultPaddingService{cfg: cfg, rngSvc: rngSvc}
+			svc := &DefaultPaddingService{cfg: cfg, rngSvc: &MockEvenRNGService{}}
 
 			got, err := svc.fixed(tt.pw, tt.char)
 			if (err != nil) != tt.expectErr {
@@ -488,10 +486,6 @@ func TestFixed(t *testing.T) {
 
 func TestAdaptive(t *testing.T) {
 	t.Parallel()
-
-	cfg := &config.Settings{
-		PadToLength: 10,
-	}
 
 	tests := []struct {
 		name   string
@@ -528,8 +522,15 @@ func TestAdaptive(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			cfg.PadToLength = tt.padLen
-			s := &DefaultPaddingService{cfg: cfg}
+			cfg := &config.Settings{
+				PadToLength: tt.padLen,
+			}
+
+			s, err := NewPaddingService(cfg, &MockEvenRNGService{})
+			if err != nil {
+				t.Errorf("service init error: %v", err)
+			}
+
 			got := s.adaptive(tt.pw, tt.char)
 
 			if got != tt.want {
