@@ -63,7 +63,7 @@ func (m *mockWordListErrService) GetWords() ([]string, error) {
 	return nil, errors.New("word list error")
 }
 
-func TestNewPasswordGeneratorService(t *testing.T) {
+func TestNewCustomPasswordGeneratorService(t *testing.T) {
 	t.Parallel()
 
 	t.Run("Valid Configuration", func(t *testing.T) {
@@ -88,7 +88,7 @@ func TestNewPasswordGeneratorService(t *testing.T) {
 	})
 }
 
-func TestGenerate(t *testing.T) {
+func TestPasswordGenerate(t *testing.T) {
 	t.Parallel()
 
 	setupService := func(
@@ -107,14 +107,12 @@ func TestGenerate(t *testing.T) {
 		}
 	}
 
-	validService := setupService(&mockTransformerService{}, &mockSeparatorService{}, &mockPaddingService{}, &mockWordListService{})
-
 	tests := []struct {
 		name    string
 		service *DefaultPasswordGeneratorService
 		wantErr bool
 	}{
-		{"Valid Service", validService, false},
+		{"Valid Service", setupService(&mockTransformerService{}, &mockSeparatorService{}, &mockPaddingService{}, &mockWordListService{}), false},
 		{"Word List Error", setupService(&mockTransformerService{}, &mockSeparatorService{}, &mockPaddingService{}, &mockWordListErrService{}), true},
 		{"Transformer Error", setupService(&mockTransformerErrService{}, &mockSeparatorService{}, &mockPaddingService{}, &mockWordListService{}), true},
 		{"Separator Error", setupService(&mockTransformerService{}, &mockSeparatorErrService{}, &mockPaddingService{}, &mockWordListService{}), true},

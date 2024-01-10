@@ -47,7 +47,7 @@ func TestNewTransformerService(t *testing.T) {
 	}
 }
 
-func TestDefaultTransformerService_Transform(t *testing.T) {
+func TestDefaultTransformerServiceTransform(t *testing.T) {
 	t.Parallel()
 
 	rngs := &MockRNGService{}
@@ -177,7 +177,7 @@ func TestDefaultTransformerService_Transform(t *testing.T) {
 	}
 }
 
-func TestDefaultTransformerService_Validate(t *testing.T) {
+func TestDefaultTransformerServiceValidate(t *testing.T) {
 	t.Parallel()
 
 	validCaseTransforms := []string{

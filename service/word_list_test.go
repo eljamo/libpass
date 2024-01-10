@@ -49,7 +49,7 @@ func TestNewWordListService(t *testing.T) {
 	}
 }
 
-func TestDefaultWordListService_GetWords(t *testing.T) {
+func TestDefaultWordListServiceGetWords(t *testing.T) {
 	t.Parallel()
 
 	cfg := &config.Settings{NumWords: 5, WordList: "EN_SMALL", WordLengthMin: 2, WordLengthMax: 10}

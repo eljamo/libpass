@@ -58,7 +58,7 @@ func TestNewSeparatorService(t *testing.T) {
 	}
 }
 
-func TestSeparatorService_Separate(t *testing.T) {
+func TestSeparatorServiceSeparate(t *testing.T) {
 	t.Parallel()
 
 	rngs := &MockRNGService{}
