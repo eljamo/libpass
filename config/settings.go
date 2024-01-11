@@ -1,5 +1,7 @@
 package config
 
+import "github.com/eljamo/libpass/v6/config/option"
+
 type Settings struct {
 	// The type of case transformation to apply to the words
 	CaseTransform string `key:"case_transform" json:"case_transform,omitempty"`
@@ -35,4 +37,26 @@ type Settings struct {
 	WordLengthMin int `key:"word_length_min" json:"word_length_min,omitempty"`
 	// The word list to use for generating the password
 	WordList string `key:"word_list" json:"word_list,omitempty"`
+}
+
+// DefaultSettings returns a new Settings struct with the default values set.
+// This is used when no settings are given to the New function.
+func DefaultSettings() *Settings {
+	return &Settings{
+		CaseTransform:           option.Random,
+		NumPasswords:            3,
+		NumWords:                3,
+		PaddingCharacter:        option.Random,
+		PaddingCharactersAfter:  2,
+		PaddingCharactersBefore: 2,
+		PaddingDigitsAfter:      2,
+		PaddingDigitsBefore:     2,
+		PaddingType:             option.Fixed,
+		SeparatorAlphabet:       option.DefaultSpecialCharacters,
+		SeparatorCharacter:      option.Random,
+		SymbolAlphabet:          option.DefaultSpecialCharacters,
+		WordLengthMax:           8,
+		WordLengthMin:           4,
+		WordList:                option.EN,
+	}
 }

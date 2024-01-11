@@ -7,8 +7,8 @@ import (
 	"sync"
 	"unicode"
 
-	"github.com/eljamo/libpass/v5/config"
-	"github.com/eljamo/libpass/v5/config/option"
+	"github.com/eljamo/libpass/v6/config"
+	"github.com/eljamo/libpass/v6/config/option"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 )

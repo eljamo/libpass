@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/eljamo/libpass/v5/asset"
-	"github.com/eljamo/libpass/v5/config"
+	"github.com/eljamo/libpass/v6/asset"
+	"github.com/eljamo/libpass/v6/config"
 )
 
 // Defines the interface for a service that extracts words from word lists

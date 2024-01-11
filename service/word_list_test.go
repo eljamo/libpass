@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/eljamo/libpass/v5/config"
+	"github.com/eljamo/libpass/v6/config"
 )
 
 func TestNewWordListService(t *testing.T) {

@@ -3,9 +3,9 @@ package service
 import (
 	"errors"
 
-	"github.com/eljamo/libpass/v5/config"
-	"github.com/eljamo/libpass/v5/config/option"
-	"github.com/eljamo/libpass/v5/internal/validator"
+	"github.com/eljamo/libpass/v6/config"
+	"github.com/eljamo/libpass/v6/config/option"
+	"github.com/eljamo/libpass/v6/internal/validator"
 )
 
 // Defines the interface for a service that can separate elements of a string

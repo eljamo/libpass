@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/eljamo/libpass/v5/config"
+	"github.com/eljamo/libpass/v6/config"
 )
 
 // PasswordGeneratorService defines the interface for a service that generates
