@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/eljamo/libpass/v6/config"
+	"github.com/eljamo/libpass/v7/config"
 )
 
 type mockTransformerService struct{}
@@ -66,26 +66,39 @@ func (m *mockWordListErrService) GetWords() ([]string, error) {
 func TestNewCustomPasswordGeneratorService(t *testing.T) {
 	t.Parallel()
 
-	t.Run("Valid Configuration", func(t *testing.T) {
-		t.Parallel()
-		cfg := &config.Settings{NumPasswords: 1}
-		service, err := NewCustomPasswordGeneratorService(cfg, &mockTransformerService{}, &mockSeparatorService{}, &mockPaddingService{}, &mockWordListService{})
-		if err != nil {
-			t.Errorf("NewCustomPasswordGeneratorService() with valid config returned error: %v, want no error", err)
-		}
-		if service == nil {
-			t.Errorf("NewCustomPasswordGeneratorService() with valid config returned nil service")
-		}
-	})
+	tests := []struct {
+		name    string
+		config  *config.Settings
+		wantErr bool
+	}{
+		{
+			name:    "Valid Configuration",
+			config:  &config.Settings{NumPasswords: 1},
+			wantErr: false,
+		},
+		{
+			name:    "Invalid Configuration - NumPasswords is 0",
+			config:  &config.Settings{NumPasswords: 0},
+			wantErr: true,
+		},
+		{
+			name:    "Invalid Configuration - NumPasswords is 11",
+			config:  &config.Settings{NumPasswords: 11},
+			wantErr: true,
+		},
+	}
 
-	t.Run("Invalid Configuration", func(t *testing.T) {
-		t.Parallel()
-		cfgInvalid := &config.Settings{NumPasswords: 0}
-		_, errInvalid := NewCustomPasswordGeneratorService(cfgInvalid, &mockTransformerService{}, &mockSeparatorService{}, &mockPaddingService{}, &mockWordListService{})
-		if errInvalid == nil {
-			t.Errorf("NewCustomPasswordGeneratorService() with invalid config should return an error, got nil")
-		}
-	})
+	for _, tt := range tests {
+		tt := tt // capture range variable
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			_, err := NewCustomPasswordGeneratorService(tt.config, &mockTransformerService{}, &mockSeparatorService{}, &mockPaddingService{}, &mockWordListService{})
+			if (err != nil) != tt.wantErr {
+				t.Errorf("NewCustomPasswordGeneratorService() with config %+v, error = %v, wantErr %v", tt.config, err, tt.wantErr)
+			}
+		})
+	}
 }
 
 func TestPasswordGenerate(t *testing.T) {

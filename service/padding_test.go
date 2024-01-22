@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/eljamo/libpass/v6/config"
-	"github.com/eljamo/libpass/v6/config/option"
+	"github.com/eljamo/libpass/v7/config"
+	"github.com/eljamo/libpass/v7/config/option"
 )
 
 func TestNewPaddingService(t *testing.T) {
@@ -23,7 +23,7 @@ func TestNewPaddingService(t *testing.T) {
 			name: "Valid configuration",
 			cfg: &config.Settings{
 				PaddingDigitsBefore: 2, PaddingDigitsAfter: 2, PaddingCharacter: "*",
-				SymbolAlphabet: []string{"!", "@", "#", "$", "%"}, PaddingType: option.Fixed,
+				SymbolAlphabet: []string{"!", "@", "#", "$", "%"}, PaddingType: option.PaddingTypeFixed,
 			},
 			wantErr: false,
 		},
@@ -34,38 +34,38 @@ func TestNewPaddingService(t *testing.T) {
 		},
 		{
 			name:    "Invalid configuration - negative padding character before and after",
-			cfg:     &config.Settings{PaddingType: option.Fixed, PaddingCharactersBefore: -1, PaddingCharactersAfter: -1},
+			cfg:     &config.Settings{PaddingType: option.PaddingTypeFixed, PaddingCharactersBefore: -1, PaddingCharactersAfter: -1},
 			wantErr: true,
 		},
 		{
 			name:    "Invalid configuration - invalid padding type",
-			cfg:     &config.Settings{PaddingCharacter: "invalid", PaddingType: option.Fixed},
+			cfg:     &config.Settings{PaddingCharacter: "invalid", PaddingType: option.PaddingTypeFixed},
 			wantErr: true,
 		},
 		{
 			name:    "Invalid configuration - empty symbol alphabet",
-			cfg:     &config.Settings{PaddingCharacter: option.Random, SymbolAlphabet: []string{}},
+			cfg:     &config.Settings{PaddingCharacter: option.PaddingCharacterRandom, SymbolAlphabet: []string{}},
 			wantErr: true,
 		},
 		{
 			name:    "Valid configuration - symbol alphabet",
-			cfg:     &config.Settings{PaddingCharacter: option.Random, SymbolAlphabet: []string{""}},
+			cfg:     &config.Settings{PaddingCharacter: option.PaddingCharacterRandom, SymbolAlphabet: []string{""}},
 			wantErr: false,
 		},
 		{
 			name:    "Valid configuration - symbol alphabet",
-			cfg:     &config.Settings{PaddingCharacter: option.Random, SymbolAlphabet: []string{"a"}},
+			cfg:     &config.Settings{PaddingCharacter: option.PaddingCharacterRandom, SymbolAlphabet: []string{"a"}},
 			wantErr: false,
 		},
 
 		{
 			name:    "Invalid configuration - too large symbol alphabet element",
-			cfg:     &config.Settings{PaddingCharacter: option.Random, SymbolAlphabet: []string{"aaa"}},
+			cfg:     &config.Settings{PaddingCharacter: option.PaddingCharacterRandom, SymbolAlphabet: []string{"aaa"}},
 			wantErr: true,
 		},
 		{
 			name:    "Invalid configuration - invalid padding to length",
-			cfg:     &config.Settings{PadToLength: -1, PaddingType: option.Adaptive},
+			cfg:     &config.Settings{PadToLength: -1, PaddingType: option.PaddingTypeAdaptive},
 			wantErr: true,
 		},
 	}
@@ -89,7 +89,7 @@ func TestPad(t *testing.T) {
 		PaddingDigitsBefore:     2,
 		PaddingDigitsAfter:      2,
 		SeparatorCharacter:      "-",
-		PaddingType:             option.Fixed,
+		PaddingType:             option.PaddingTypeFixed,
 		PaddingCharactersBefore: 2,
 		PaddingCharactersAfter:  2,
 		PadToLength:             20,
@@ -343,7 +343,7 @@ func TestSymbols(t *testing.T) {
 		{
 			name: "fixed padding with specific character",
 			cfg: &config.Settings{
-				PaddingType:             option.Fixed,
+				PaddingType:             option.PaddingTypeFixed,
 				PaddingCharacter:        "*",
 				PaddingCharactersBefore: 2,
 				PaddingCharactersAfter:  2,
@@ -355,7 +355,7 @@ func TestSymbols(t *testing.T) {
 		{
 			name: "adaptive padding to specific length",
 			cfg: &config.Settings{
-				PaddingType:      option.Adaptive,
+				PaddingType:      option.PaddingTypeAdaptive,
 				PaddingCharacter: "*",
 				PadToLength:      10,
 			},
@@ -365,7 +365,7 @@ func TestSymbols(t *testing.T) {
 		{
 			name: "no padding",
 			cfg: &config.Settings{
-				PaddingType: option.None,
+				PaddingType: option.PaddingTypeNone,
 			},
 			pw:   "password",
 			want: "password",
@@ -373,8 +373,8 @@ func TestSymbols(t *testing.T) {
 		{
 			name: "random padding character",
 			cfg: &config.Settings{
-				PaddingType:             option.Fixed,
-				PaddingCharacter:        option.Random,
+				PaddingType:             option.PaddingTypeFixed,
+				PaddingCharacter:        option.PaddingCharacterRandom,
 				PaddingCharactersBefore: 2,
 				PaddingCharactersAfter:  2,
 				PadToLength:             10,

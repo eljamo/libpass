@@ -4,8 +4,8 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/eljamo/libpass/v6/config"
-	"github.com/eljamo/libpass/v6/config/option"
+	"github.com/eljamo/libpass/v7/config"
+	"github.com/eljamo/libpass/v7/config/option"
 )
 
 func TestNewSeparatorService(t *testing.T) {
@@ -30,18 +30,18 @@ func TestNewSeparatorService(t *testing.T) {
 		},
 		{
 			name:    "Valid configuration - separator alphabet",
-			cfg:     &config.Settings{SeparatorCharacter: option.Random, SeparatorAlphabet: []string{""}},
+			cfg:     &config.Settings{SeparatorCharacter: option.SeparatorCharacterRandom, SeparatorAlphabet: []string{""}},
 			wantErr: false,
 		},
 
 		{
 			name:    "Valid configuration - separator alphabet",
-			cfg:     &config.Settings{SeparatorCharacter: option.Random, SeparatorAlphabet: []string{"a"}},
+			cfg:     &config.Settings{SeparatorCharacter: option.SeparatorCharacterRandom, SeparatorAlphabet: []string{"a"}},
 			wantErr: false,
 		},
 		{
 			name:    "Invalid configuration - empty separator alphabet",
-			cfg:     &config.Settings{SeparatorCharacter: option.Random, SeparatorAlphabet: []string{"aaa"}},
+			cfg:     &config.Settings{SeparatorCharacter: option.SeparatorCharacterRandom, SeparatorAlphabet: []string{"aaa"}},
 			wantErr: true,
 		},
 	}
@@ -88,14 +88,14 @@ func TestSeparatorServiceSeparate(t *testing.T) {
 		},
 		{
 			name:     "With random separator",
-			cfg:      &config.Settings{SeparatorCharacter: option.Random, SeparatorAlphabet: []string{"!", "-", "="}},
+			cfg:      &config.Settings{SeparatorCharacter: option.SeparatorCharacterRandom, SeparatorAlphabet: []string{"!", "-", "="}},
 			rngSvc:   rngs,
 			input:    []string{"a", "b", "c"},
 			expected: []string{"-", "a", "-", "b", "-", "c", "-"},
 		},
 		{
 			name:     "With random separator with RNG returning a even number",
-			cfg:      &config.Settings{SeparatorCharacter: option.Random, SeparatorAlphabet: []string{"!", "-", "="}},
+			cfg:      &config.Settings{SeparatorCharacter: option.SeparatorCharacterRandom, SeparatorAlphabet: []string{"!", "-", "="}},
 			rngSvc:   erngs,
 			input:    []string{"a", "b", "c"},
 			expected: []string{"=", "a", "=", "b", "=", "c", "="},

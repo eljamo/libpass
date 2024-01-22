@@ -6,7 +6,7 @@ A Go library specifically designed for generating secure and memorable passwords
 ## Install
 
 ```
-go get github.com/eljamo/libpass/v6
+go get github.com/eljamo/libpass/v7
 ```
 
 ## Basic Usage
@@ -17,8 +17,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/eljamo/libpass/v6/config"
-	"github.com/eljamo/libpass/v6/service"
+	"github.com/eljamo/libpass/v7/config"
+	"github.com/eljamo/libpass/v7/service"
 )
 
 func main() {
