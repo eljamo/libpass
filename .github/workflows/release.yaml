@@ -9,24 +9,21 @@ permissions:
   contents: write
 
 jobs:
-  test: 
+  test:
     uses: ./.github/workflows/test.yaml
     secrets: inherit
   goreleaser:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout
+      - name: Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      -
-        name: Setup
+      - name: Setup
         uses: actions/setup-go@v5
         with:
-          go-version: '>=1.21'
-      -
-        name: Run GoReleaser
+          go-version: ">=1.22"
+      - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v5
         with:
           distribution: goreleaser
