@@ -1,9 +1,11 @@
 package service
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/eljamo/libpass/v7/config"
+	"github.com/eljamo/libpass/v7/config/option"
 )
 
 func TestNewWordListService(t *testing.T) {
@@ -16,7 +18,7 @@ func TestNewWordListService(t *testing.T) {
 	}{
 		{
 			name:    "Valid Config",
-			cfg:     &config.Settings{NumWords: 5, WordList: "EN_SMALL", WordLengthMin: 2, WordLengthMax: 10},
+			cfg:     &config.Settings{NumWords: 5, WordList: "EN_SMALL", WordLengthMin: 3, WordLengthMax: 10},
 			wantErr: false,
 		},
 		{
@@ -49,22 +51,34 @@ func TestNewWordListService(t *testing.T) {
 	}
 }
 
-func TestDefaultWordListServiceGetWords(t *testing.T) {
+func TestAllWordListsGetWords(t *testing.T) {
 	t.Parallel()
 
-	cfg := &config.Settings{NumWords: 5, WordList: "EN_SMALL", WordLengthMin: 2, WordLengthMax: 10}
-	service, err := NewWordListService(cfg, &MockRNGService{})
-	if err != nil {
-		t.Fatalf("Failed to create WordListService: %v", err)
-	}
+	for _, wordList := range option.WordLists {
+		wordList := wordList
+		t.Run(fmt.Sprintf("WordList_%s", wordList), func(t *testing.T) {
+			t.Parallel()
 
-	t.Run("GetWords", func(t *testing.T) {
-		words, err := service.GetWords()
-		if err != nil {
-			t.Errorf("GetWords() error = %v", err)
-		}
-		if len(words) != cfg.NumWords {
-			t.Errorf("GetWords() returned %d words, want %d", len(words), cfg.NumWords)
-		}
-	})
+			cfg := &config.Settings{
+				NumWords:      5,
+				WordList:      wordList,
+				WordLengthMin: 3,
+				WordLengthMax: 10,
+			}
+
+			service, err := NewWordListService(cfg, &MockRNGService{})
+			if err != nil {
+				t.Fatalf("Failed to create WordListService: %v", err)
+			}
+
+			words, err := service.GetWords()
+			if err != nil {
+				t.Fatalf("GetWords() error = %v", err)
+			}
+
+			if len(words) != cfg.NumWords {
+				t.Fatalf("GetWords() returned %d words, want %d", len(words), cfg.NumWords)
+			}
+		})
+	}
 }
