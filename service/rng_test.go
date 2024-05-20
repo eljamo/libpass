@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"testing"
 )
 
@@ -56,6 +57,30 @@ func (s *MockEvenRNGService) GenerateSliceWithMax(length, max int) ([]int, error
 	}
 
 	return slice, nil
+}
+
+var ErrRNGService = errors.New("mock RNG Service Error")
+
+type MockErrRNGService struct{}
+
+func (s *MockErrRNGService) GenerateWithMax(max int) (int, error) {
+	return 0, ErrRNGService
+}
+
+func (s *MockErrRNGService) Generate() (int, error) {
+	return 0, ErrRNGService
+}
+
+func (s *MockErrRNGService) GenerateDigit() (int, error) {
+	return 0, ErrRNGService
+}
+
+func (s *MockErrRNGService) GenerateSlice(length int) ([]int, error) {
+	return nil, ErrRNGService
+}
+
+func (s *MockErrRNGService) GenerateSliceWithMax(length, max int) ([]int, error) {
+	return nil, ErrRNGService
 }
 
 func TestRNGGenerateWithMax(t *testing.T) {

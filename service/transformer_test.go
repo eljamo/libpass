@@ -125,6 +125,13 @@ func TestDefaultTransformerServiceTransform(t *testing.T) {
 			expected: []string{"HELLO", "WORLD"},
 		},
 		{
+			name:     "None",
+			cfg:      &config.Settings{CaseTransform: option.CaseTransformNone},
+			rngSvc:   rngs,
+			input:    []string{"hello", "world"},
+			expected: []string{"hello", "world"},
+		},
+		{
 			name:     "Random",
 			cfg:      &config.Settings{CaseTransform: option.CaseTransformRandom},
 			rngSvc:   rngs,

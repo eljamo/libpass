@@ -83,9 +83,6 @@ func (s *DefaultTransformerService) Transform(slice []string) ([]string, error) 
 		return s.sentence(slice), nil
 	case option.CaseTransformUpper:
 		return s.upper(slice), nil
-	case option.CaseTransformNone:
-	default:
-		return slice, nil
 	}
 
 	return slice, nil

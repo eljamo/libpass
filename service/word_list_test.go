@@ -79,6 +79,16 @@ func TestAllWordListsGetWords(t *testing.T) {
 			if len(words) != cfg.NumWords {
 				t.Fatalf("GetWords() returned %d words, want %d", len(words), cfg.NumWords)
 			}
+
+			errService, err := NewWordListService(cfg, &MockErrRNGService{})
+			if err != nil {
+				t.Fatalf("Failed to create WordListService: %v", errService)
+			}
+
+			_, err = errService.GetWords()
+			if err == nil {
+				t.Fatalf("GetWords() expected error, got nil")
+			}
 		})
 	}
 }
