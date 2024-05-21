@@ -57,6 +57,7 @@ func DefaultSettings() *Settings {
 		PaddingDigitsAfter:      2,
 		PaddingDigitsBefore:     2,
 		PaddingType:             option.PaddingTypeFixed,
+		PadToLength:             0,
 		Preset:                  option.PresetDefault,
 		SeparatorAlphabet:       option.DefaultSpecialCharacters,
 		SeparatorCharacter:      option.SeparatorCharacterRandom,
