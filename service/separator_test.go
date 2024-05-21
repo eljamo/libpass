@@ -11,7 +11,7 @@ import (
 func TestNewSeparatorService(t *testing.T) {
 	t.Parallel()
 
-	mockRNGService := &MockRNGService{}
+	mockRNGService := &mockRNGService{}
 
 	tests := []struct {
 		name    string
@@ -61,8 +61,8 @@ func TestNewSeparatorService(t *testing.T) {
 func TestSeparatorServiceSeparate(t *testing.T) {
 	t.Parallel()
 
-	rngs := &MockRNGService{}
-	erngs := &MockEvenRNGService{}
+	rngs := &mockRNGService{}
+	erngs := &mockEvenRNGService{}
 
 	tests := []struct {
 		name      string
