@@ -5,25 +5,25 @@ import (
 	"testing"
 )
 
-type MockRNGService struct{}
+type mockRNGService struct{}
 
-func (s *MockRNGService) GenerateWithMax(max int) (int, error) {
+func (s *mockRNGService) GenerateWithMax(max int) (int, error) {
 	return 1, nil
 }
 
-func (s *MockRNGService) Generate() (int, error) {
+func (s *mockRNGService) Generate() (int, error) {
 	return 1, nil
 }
 
-func (s *MockRNGService) GenerateDigit() (int, error) {
+func (s *mockRNGService) GenerateDigit() (int, error) {
 	return 1, nil
 }
 
-func (s *MockRNGService) GenerateSlice(length int) ([]int, error) {
+func (s *mockRNGService) GenerateSlice(length int) ([]int, error) {
 	return s.GenerateSliceWithMax(length, 2)
 }
 
-func (s *MockRNGService) GenerateSliceWithMax(length, max int) ([]int, error) {
+func (s *mockRNGService) GenerateSliceWithMax(length, max int) ([]int, error) {
 	slice := make([]int, length)
 	for i := 0; i < length; i++ {
 		slice[i] = 2
@@ -32,25 +32,25 @@ func (s *MockRNGService) GenerateSliceWithMax(length, max int) ([]int, error) {
 	return slice, nil
 }
 
-type MockEvenRNGService struct{}
+type mockEvenRNGService struct{}
 
-func (s *MockEvenRNGService) GenerateWithMax(max int) (int, error) {
+func (s *mockEvenRNGService) GenerateWithMax(max int) (int, error) {
 	return 2, nil
 }
 
-func (s *MockEvenRNGService) Generate() (int, error) {
+func (s *mockEvenRNGService) Generate() (int, error) {
 	return 2, nil
 }
 
-func (s *MockEvenRNGService) GenerateDigit() (int, error) {
+func (s *mockEvenRNGService) GenerateDigit() (int, error) {
 	return 2, nil
 }
 
-func (s *MockEvenRNGService) GenerateSlice(length int) ([]int, error) {
+func (s *mockEvenRNGService) GenerateSlice(length int) ([]int, error) {
 	return s.GenerateSliceWithMax(length, 2)
 }
 
-func (s *MockEvenRNGService) GenerateSliceWithMax(length, max int) ([]int, error) {
+func (s *mockEvenRNGService) GenerateSliceWithMax(length, max int) ([]int, error) {
 	slice := make([]int, length)
 	for i := 0; i < length; i++ {
 		slice[i] = 2
@@ -59,28 +59,28 @@ func (s *MockEvenRNGService) GenerateSliceWithMax(length, max int) ([]int, error
 	return slice, nil
 }
 
-var ErrRNGService = errors.New("mock RNG Service Error")
+var errmockRNGService = errors.New("mock RNG Service Error")
 
-type MockErrRNGService struct{}
+type mockErrRNGService struct{}
 
-func (s *MockErrRNGService) GenerateWithMax(max int) (int, error) {
-	return 0, ErrRNGService
+func (s *mockErrRNGService) GenerateWithMax(max int) (int, error) {
+	return 0, errmockRNGService
 }
 
-func (s *MockErrRNGService) Generate() (int, error) {
-	return 0, ErrRNGService
+func (s *mockErrRNGService) Generate() (int, error) {
+	return 0, errmockRNGService
 }
 
-func (s *MockErrRNGService) GenerateDigit() (int, error) {
-	return 0, ErrRNGService
+func (s *mockErrRNGService) GenerateDigit() (int, error) {
+	return 0, errmockRNGService
 }
 
-func (s *MockErrRNGService) GenerateSlice(length int) ([]int, error) {
-	return nil, ErrRNGService
+func (s *mockErrRNGService) GenerateSlice(length int) ([]int, error) {
+	return nil, errmockRNGService
 }
 
-func (s *MockErrRNGService) GenerateSliceWithMax(length, max int) ([]int, error) {
-	return nil, ErrRNGService
+func (s *mockErrRNGService) GenerateSliceWithMax(length, max int) ([]int, error) {
+	return nil, errmockRNGService
 }
 
 func TestRNGGenerateWithMax(t *testing.T) {

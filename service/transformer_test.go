@@ -12,7 +12,7 @@ import (
 func TestNewTransformerService(t *testing.T) {
 	t.Parallel()
 
-	mockRNGService := &MockEvenRNGService{}
+	mockRNGService := &mockEvenRNGService{}
 
 	validTransformType := option.CaseTransformUpper
 	invalidTransformType := "invalid"
@@ -50,8 +50,8 @@ func TestNewTransformerService(t *testing.T) {
 func TestDefaultTransformerServiceTransform(t *testing.T) {
 	t.Parallel()
 
-	rngs := &MockRNGService{}
-	erngs := &MockEvenRNGService{}
+	rngs := &mockRNGService{}
+	erngs := &mockEvenRNGService{}
 
 	tests := []struct {
 		name      string

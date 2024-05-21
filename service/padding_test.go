@@ -12,7 +12,7 @@ import (
 func TestNewPaddingService(t *testing.T) {
 	t.Parallel()
 
-	mockRNGService := &MockRNGService{}
+	mockRNGService := &mockRNGService{}
 
 	tests := []struct {
 		name    string
@@ -96,7 +96,7 @@ func TestPad(t *testing.T) {
 		PaddingCharacter:        "*",
 		SymbolAlphabet:          []string{"!"},
 	}
-	rngs := &MockRNGService{}
+	rngs := &mockRNGService{}
 	s, err := NewPaddingService(cfg, rngs)
 	if err != nil {
 		t.Errorf("service init error: %v", err)
@@ -119,7 +119,7 @@ func TestPad(t *testing.T) {
 func TestDigits(t *testing.T) {
 	t.Parallel()
 
-	rngs := &MockRNGService{}
+	rngs := &mockRNGService{}
 	tests := []struct {
 		name     string
 		input    []string
@@ -192,7 +192,7 @@ func TestGenerateRandomDigits(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			rngs := &MockRNGService{}
+			rngs := &mockRNGService{}
 			s, err := NewPaddingService(cfg, rngs)
 			if err != nil {
 				t.Errorf("service init error: %v", err)
@@ -330,7 +330,7 @@ func TestRemoveRandomEdgeSeparatorCharacter(t *testing.T) {
 func TestSymbols(t *testing.T) {
 	t.Parallel()
 
-	rngs := &MockRNGService{}
+	rngs := &mockRNGService{}
 
 	tests := []struct {
 		name       string
@@ -465,7 +465,7 @@ func TestFixed(t *testing.T) {
 				PaddingCharactersBefore: tt.before,
 				PaddingCharactersAfter:  tt.after,
 			}
-			svc := &DefaultPaddingService{cfg: cfg, rngSvc: &MockEvenRNGService{}}
+			svc := &DefaultPaddingService{cfg: cfg, rngSvc: &mockEvenRNGService{}}
 
 			got, err := svc.fixed(tt.pw, tt.char)
 			if (err != nil) != tt.expectErr {
@@ -526,7 +526,7 @@ func TestAdaptive(t *testing.T) {
 				PadToLength: tt.padLen,
 			}
 
-			s, err := NewPaddingService(cfg, &MockEvenRNGService{})
+			s, err := NewPaddingService(cfg, &mockEvenRNGService{})
 			if err != nil {
 				t.Errorf("service init error: %v", err)
 			}
