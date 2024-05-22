@@ -58,37 +58,42 @@ func TestAllWordListsGetWords(t *testing.T) {
 		wordList := wordList
 		t.Run(fmt.Sprintf("WordList_%s", wordList), func(t *testing.T) {
 			t.Parallel()
-
-			cfg := &config.Settings{
-				NumWords:      5,
-				WordList:      wordList,
-				WordLengthMin: 3,
-				WordLengthMax: 10,
-			}
-
-			service, err := NewWordListService(cfg, &mockRNGService{})
-			if err != nil {
-				t.Fatalf("Failed to create WordListService: %v", err)
-			}
-
-			words, err := service.GetWords()
-			if err != nil {
-				t.Fatalf("GetWords() error = %v", err)
-			}
-
-			if len(words) != cfg.NumWords {
-				t.Fatalf("GetWords() returned %d words, want %d", len(words), cfg.NumWords)
-			}
-
-			errService, err := NewWordListService(cfg, &mockErrRNGService{})
-			if err != nil {
-				t.Fatalf("Failed to create WordListService: %v", errService)
-			}
-
-			_, err = errService.GetWords()
-			if err == nil {
-				t.Fatalf("GetWords() expected error, got nil")
-			}
+			runWordListTest(t, wordList)
 		})
+	}
+}
+
+func runWordListTest(t *testing.T, wordList string) {
+	t.Helper()
+
+	cfg := &config.Settings{
+		NumWords:      5,
+		WordList:      wordList,
+		WordLengthMin: 3,
+		WordLengthMax: 10,
+	}
+
+	service, err := NewWordListService(cfg, &mockRNGService{})
+	if err != nil {
+		t.Fatalf("Failed to create WordListService: %v", err)
+	}
+
+	words, err := service.GetWords()
+	if err != nil {
+		t.Fatalf("GetWords() error = %v", err)
+	}
+
+	if len(words) != cfg.NumWords {
+		t.Fatalf("GetWords() returned %d words, want %d", len(words), cfg.NumWords)
+	}
+
+	errService, err := NewWordListService(cfg, &mockErrRNGService{})
+	if err != nil {
+		t.Fatalf("Failed to create WordListService: %v", errService)
+	}
+
+	_, err = errService.GetWords()
+	if err == nil {
+		t.Fatalf("GetWords() expected error, got nil")
 	}
 }

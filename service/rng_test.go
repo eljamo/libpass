@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 )
 
@@ -59,28 +60,28 @@ func (s *mockEvenRNGService) GenerateSliceWithMax(length, max int) ([]int, error
 	return slice, nil
 }
 
-var errmockRNGService = errors.New("mock RNG Service Error")
+var errMockRNGService = errors.New("mock RNG Service Error")
 
 type mockErrRNGService struct{}
 
 func (s *mockErrRNGService) GenerateWithMax(max int) (int, error) {
-	return 0, errmockRNGService
+	return 0, errMockRNGService
 }
 
 func (s *mockErrRNGService) Generate() (int, error) {
-	return 0, errmockRNGService
+	return 0, errMockRNGService
 }
 
 func (s *mockErrRNGService) GenerateDigit() (int, error) {
-	return 0, errmockRNGService
+	return 0, errMockRNGService
 }
 
 func (s *mockErrRNGService) GenerateSlice(length int) ([]int, error) {
-	return nil, errmockRNGService
+	return nil, errMockRNGService
 }
 
 func (s *mockErrRNGService) GenerateSliceWithMax(length, max int) ([]int, error) {
-	return nil, errmockRNGService
+	return nil, errMockRNGService
 }
 
 func TestRNGGenerateWithMax(t *testing.T) {
@@ -99,24 +100,33 @@ func TestRNGGenerateWithMax(t *testing.T) {
 
 	for _, tc := range tests {
 		tc := tc
-		t.Run(tc.name, func(t *testing.T) {
-			t.Parallel()
+		t.Run(tc.name, createTestFunc(tc, rngSvc))
+	}
+}
 
-			generated, err := rngSvc.GenerateWithMax(tc.max)
+func createTestFunc(tc struct {
+	name      string
+	max       int
+	expectErr bool
+}, rngSvc *DefaultRNGService,
+) func(t *testing.T) {
+	return func(t *testing.T) {
+		t.Parallel()
 
-			if tc.expectErr {
-				if err == nil {
-					t.Errorf("Expected an error for max = %v, but got none", tc.max)
-				}
-			} else {
-				if err != nil {
-					t.Errorf("Unexpected error for max = %v: %v", tc.max, err)
-				}
-				if generated < 0 || generated >= tc.max {
-					t.Errorf("Generated number is out of bounds for max = %v: got %v", tc.max, generated)
-				}
+		generated, err := rngSvc.GenerateWithMax(tc.max)
+
+		if tc.expectErr {
+			if err == nil {
+				t.Errorf("Expected an error for max = %v, but got none", tc.max)
 			}
-		})
+		} else {
+			if err != nil {
+				t.Errorf("Unexpected error for max = %v: %v", tc.max, err)
+			}
+			if generated < 0 || generated >= tc.max {
+				t.Errorf("Generated number is out of bounds for max = %v: got %v", tc.max, generated)
+			}
+		}
 	}
 }
 
@@ -126,8 +136,8 @@ func TestRNGGenerate(t *testing.T) {
 	rngSvc := NewRNGService()
 
 	t.Run("Generate", func(t *testing.T) {
+		t.Parallel()
 		generated, err := rngSvc.Generate()
-
 		if err != nil {
 			t.Errorf("Unexpected error: %v", err)
 		}
@@ -141,78 +151,124 @@ func TestGenerateSliceWithMax(t *testing.T) {
 	t.Parallel()
 	rng := NewRNGService()
 
-	t.Run("valid slice", func(t *testing.T) {
-		length, max := 5, 10
-		slice, err := rng.GenerateSliceWithMax(length, max)
-		if err != nil {
-			t.Fatalf("unexpected error: %v", err)
-		}
-		if len(slice) != length {
-			t.Errorf("expected slice length %d, got %d", length, len(slice))
-		}
-		for _, num := range slice {
-			if num < 0 || num >= max {
-				t.Errorf("number %d is out of bounds [0, %d)", num, max)
+	tests := []struct {
+		name     string
+		length   int
+		max      int
+		wantErr  bool
+		wantLen  int
+		checkVal func([]int) error
+	}{
+		{
+			name:     "valid slice",
+			length:   5,
+			max:      10,
+			wantErr:  false,
+			wantLen:  5,
+			checkVal: checkSliceValues,
+		},
+		{
+			name:    "negative length",
+			length:  -1,
+			max:     10,
+			wantErr: true,
+			wantLen: 0,
+		},
+		{
+			name:    "max less than 1",
+			length:  5,
+			max:     0,
+			wantErr: true,
+			wantLen: 0,
+		},
+		{
+			name:    "zero length",
+			length:  0,
+			max:     10,
+			wantErr: false,
+			wantLen: 0,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt // capture range variable
+
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			slice, err := rng.GenerateSliceWithMax(tt.length, tt.max)
+			if (err != nil) != tt.wantErr {
+				t.Fatalf("GenerateSliceWithMax() error = %v, wantErr %v", err, tt.wantErr)
 			}
-		}
-	})
 
-	t.Run("negative length", func(t *testing.T) {
-		_, err := rng.GenerateSliceWithMax(-1, 10)
-		if err == nil {
-			t.Error("expected error for negative length, got nil")
-		}
-	})
+			if len(slice) != tt.wantLen {
+				t.Errorf("expected slice length %d, got %d", tt.wantLen, len(slice))
+			}
 
-	t.Run("max less than 1", func(t *testing.T) {
-		_, err := rng.GenerateSliceWithMax(5, 0)
-		if err == nil {
-			t.Error("expected error for max < 1, got nil")
-		}
-	})
+			if tt.checkVal != nil {
+				if err := tt.checkVal(slice); err != nil {
+					t.Errorf("value check failed: %v", err)
+				}
+			}
+		})
+	}
+}
 
-	t.Run("zero length", func(t *testing.T) {
-		slice, err := rng.GenerateSliceWithMax(0, 10)
-		if err != nil {
-			t.Fatalf("unexpected error: %v", err)
+func checkSliceValues(slice []int) error {
+	for _, num := range slice {
+		if num < 0 || num >= 10 {
+			return fmt.Errorf("number %d is out of bounds [0, %d)", num, 10)
 		}
-		if len(slice) != 0 {
-			t.Errorf("expected empty slice, got %d elements", len(slice))
-		}
-	})
+	}
+	return nil
 }
 
 func TestGenerateSlice(t *testing.T) {
 	t.Parallel()
 	rng := NewRNGService()
 
-	t.Run("valid slice", func(t *testing.T) {
-		length := 5
-		slice, err := rng.GenerateSlice(length)
-		if err != nil {
-			t.Fatalf("unexpected error: %v", err)
-		}
-		if len(slice) != length {
-			t.Errorf("expected slice length %d, got %d", length, len(slice))
-		}
-	})
+	tests := []struct {
+		name    string
+		length  int
+		wantErr bool
+		wantLen int
+	}{
+		{
+			name:    "valid slice",
+			length:  5,
+			wantErr: false,
+			wantLen: 5,
+		},
+		{
+			name:    "negative length",
+			length:  -1,
+			wantErr: true,
+			wantLen: 0,
+		},
+		{
+			name:    "zero length",
+			length:  0,
+			wantErr: false,
+			wantLen: 0,
+		},
+	}
 
-	t.Run("negative length", func(t *testing.T) {
-		_, err := rng.GenerateSlice(-1)
-		if err == nil {
-			t.Error("expected error for negative length, got nil")
-		}
-	})
+	for _, tt := range tests {
+		tt := tt // capture range variable
 
-	t.Run("zero length", func(t *testing.T) {
-		slice, err := rng.GenerateSlice(0)
-		if err != nil {
-			t.Fatalf("unexpected error: %v", err)
-		}
-		if len(slice) != 0 {
-			t.Errorf("expected empty slice, got %d elements", len(slice))
-		}
-	})
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			slice, err := rng.GenerateSlice(tt.length)
+			if (err != nil) != tt.wantErr {
+				t.Fatalf("GenerateSlice() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			if len(slice) != tt.wantLen {
+				t.Errorf("expected slice length %d, got %d", tt.wantLen, len(slice))
+			}
+		})
+	}
 }
 
 func TestGenerateDigit(t *testing.T) {

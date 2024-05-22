@@ -15,6 +15,7 @@ import (
 var testFiles embed.FS
 
 func TestKeyToFile(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		key      string
 		fileType string
@@ -39,6 +40,7 @@ func TestKeyToFile(t *testing.T) {
 }
 
 func TestLoadJSONFileData(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name        string
 		filePath    string
@@ -145,6 +147,7 @@ func TestReadAndFilterWords(t *testing.T) {
 }
 
 func TestLoadJSONFile(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name        string
 		filePath    string
@@ -201,6 +204,7 @@ func TestLoadJSONFile(t *testing.T) {
 }
 
 func TestGetJSONPreset(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name    string
 		key     string

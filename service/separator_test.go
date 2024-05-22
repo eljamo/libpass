@@ -64,6 +64,7 @@ func TestSeparatorServiceSeparate(t *testing.T) {
 	rngs := &mockRNGService{}
 	erngs := &mockEvenRNGService{}
 
+	// Define test cases
 	tests := []struct {
 		name      string
 		cfg       *config.Settings
@@ -102,36 +103,43 @@ func TestSeparatorServiceSeparate(t *testing.T) {
 		},
 	}
 
+	// Run test cases
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-
-			service, err := NewSeparatorService(tt.cfg, tt.rngSvc)
-			if err != nil {
-				t.Errorf("unexpected error with service init: %s", err)
-				return
-			}
-
-			got, err := service.Separate(tt.input)
-
-			if tt.expectErr != nil {
-				if err == nil {
-					t.Errorf("expected error but got none")
-				} else if err.Error() != tt.expectErr.Error() {
-					t.Errorf("expected error %q but got %q", tt.expectErr, err)
-				}
-				return
-			}
-
-			if err != nil {
-				t.Errorf("unexpected error: %s", err)
-				return
-			}
-
-			if !slices.Equal(got, tt.expected) {
-				t.Errorf("expected %v, but got %v", tt.expected, got)
-			}
+			runSeparatorServiceSeparateTest(t, tt.cfg, tt.rngSvc, tt.input, tt.expected, tt.expectErr)
 		})
+	}
+}
+
+// Helper function to run the test cases
+func runSeparatorServiceSeparateTest(t *testing.T, cfg *config.Settings, rngSvc RNGService, input []string, expected []string, expectErr error) {
+	t.Helper()
+
+	service, err := NewSeparatorService(cfg, rngSvc)
+	if err != nil {
+		t.Errorf("unexpected error with service init: %s", err)
+		return
+	}
+
+	got, err := service.Separate(input)
+
+	if expectErr != nil {
+		if err == nil {
+			t.Errorf("expected error but got none")
+		} else if err.Error() != expectErr.Error() {
+			t.Errorf("expected error %q but got %q", expectErr, err)
+		}
+		return
+	}
+
+	if err != nil {
+		t.Errorf("unexpected error: %s", err)
+		return
+	}
+
+	if !slices.Equal(got, expected) {
+		t.Errorf("expected %v, but got %v", expected, got)
 	}
 }
