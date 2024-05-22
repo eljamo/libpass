@@ -1,8 +1,8 @@
 package service
 
 import (
+	"fmt"
 	"reflect"
-	"strings"
 	"testing"
 
 	"github.com/eljamo/libpass/v7/config"
@@ -103,6 +103,7 @@ func TestPad(t *testing.T) {
 	}
 
 	t.Run("FixedPaddingWithConfig", func(t *testing.T) {
+		t.Parallel()
 		input := []string{"-test-"}
 		expected := "**11-test-11**"
 
@@ -199,20 +200,25 @@ func TestGenerateRandomDigits(t *testing.T) {
 			}
 
 			got, err := s.generateRandomDigits(tt.count)
-			if tt.count < 0 {
-				if err == nil {
-					t.Errorf("generateRandomDigits() expected error for count %d, got nil", tt.count)
-				}
-			} else {
-				if err != nil {
-					t.Errorf("generateRandomDigits() error = %v, expectErr nil", err)
-				}
-				if !reflect.DeepEqual(got, tt.expected) {
-					t.Errorf("generateRandomDigits() got = %v, expected %v", got, tt.expected)
-				}
+			if err := checkError(tt.count, err); err != nil {
+				t.Errorf("generateRandomDigits() error = %v, expectErr nil", err)
+				return
+			}
+
+			if !reflect.DeepEqual(got, tt.expected) {
+				t.Errorf("generateRandomDigits() got = %v, expected %v", got, tt.expected)
 			}
 		})
 	}
+}
+
+func checkError(count int, err error) error {
+	if count < 0 {
+		if err == nil {
+			return fmt.Errorf("generateRandomDigits() expected error for count %d, got nil", count)
+		}
+	}
+	return nil
 }
 
 func TestRemoveEdgeSeparatorCharacter(t *testing.T) {
@@ -412,75 +418,81 @@ func TestSymbols(t *testing.T) {
 func TestFixed(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct {
-		name        string
-		pw          string
-		char        string
-		before      int
-		after       int
-		want        string
-		expectErr   bool
-		errContains string
-	}{
-		{
-			name:   "Normal Padding",
-			pw:     "password",
-			char:   "*",
-			before: 2,
-			after:  3,
-			want:   "**password***",
-		},
-		{
-			name:   "No Padding",
-			pw:     "password",
-			char:   "*",
-			before: 0,
-			after:  0,
-			want:   "password",
-		},
-		{
-			name:   "Padding Before Only",
-			pw:     "password",
-			char:   "#",
-			before: 4,
-			after:  0,
-			want:   "####password",
-		},
-		{
-			name:   "Padding After Only",
-			pw:     "password",
-			char:   "+",
-			before: 0,
-			after:  2,
-			want:   "password++",
-		},
+	testNormalPadding(t)
+	testNoPadding(t)
+	testPaddingBeforeOnly(t)
+	testPaddingAfterOnly(t)
+}
+
+func testNormalPadding(t *testing.T) {
+	t.Helper()
+
+	cfg := &config.Settings{
+		PaddingCharactersBefore: 2,
+		PaddingCharactersAfter:  3,
 	}
+	svc := &DefaultPaddingService{cfg: cfg, rngSvc: &mockEvenRNGService{}}
 
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
+	got, err := svc.fixed("password", "*")
+	if (err != nil) != false {
+		t.Fatalf("fixed() error = %v, expectErr %v", err, false)
+	}
+	if got != "**password***" {
+		t.Errorf("fixed() got = %v, want %v", got, "**password***")
+	}
+}
 
-			cfg := &config.Settings{
-				PaddingCharactersBefore: tt.before,
-				PaddingCharactersAfter:  tt.after,
-			}
-			svc := &DefaultPaddingService{cfg: cfg, rngSvc: &mockEvenRNGService{}}
+func testNoPadding(t *testing.T) {
+	t.Helper()
 
-			got, err := svc.fixed(tt.pw, tt.char)
-			if (err != nil) != tt.expectErr {
-				t.Fatalf("fixed() error = %v, expectErr %v", err, tt.expectErr)
-			}
-			if tt.expectErr {
-				if !strings.Contains(err.Error(), tt.errContains) {
-					t.Errorf("fixed() error = %v, want to contain %s", err, tt.errContains)
-				}
-			} else {
-				if got != tt.want {
-					t.Errorf("fixed() got = %v, want %v", got, tt.want)
-				}
-			}
-		})
+	cfg := &config.Settings{
+		PaddingCharactersBefore: 0,
+		PaddingCharactersAfter:  0,
+	}
+	svc := &DefaultPaddingService{cfg: cfg, rngSvc: &mockEvenRNGService{}}
+
+	got, err := svc.fixed("password", "*")
+	if (err != nil) != false {
+		t.Fatalf("fixed() error = %v, expectErr %v", err, false)
+	}
+	if got != "password" {
+		t.Errorf("fixed() got = %v, want %v", got, "password")
+	}
+}
+
+func testPaddingBeforeOnly(t *testing.T) {
+	t.Helper()
+
+	cfg := &config.Settings{
+		PaddingCharactersBefore: 4,
+		PaddingCharactersAfter:  0,
+	}
+	svc := &DefaultPaddingService{cfg: cfg, rngSvc: &mockEvenRNGService{}}
+
+	got, err := svc.fixed("password", "#")
+	if (err != nil) != false {
+		t.Fatalf("fixed() error = %v, expectErr %v", err, false)
+	}
+	if got != "####password" {
+		t.Errorf("fixed() got = %v, want %v", got, "####password")
+	}
+}
+
+func testPaddingAfterOnly(t *testing.T) {
+	t.Helper()
+
+	cfg := &config.Settings{
+		PaddingCharactersBefore: 0,
+		PaddingCharactersAfter:  2,
+	}
+	svc := &DefaultPaddingService{cfg: cfg, rngSvc: &mockEvenRNGService{}}
+
+	got, err := svc.fixed("password", "+")
+	if (err != nil) != false {
+		t.Fatalf("fixed() error = %v, expectErr %v", err, false)
+	}
+	if got != "password++" {
+		t.Errorf("fixed() got = %v, want %v", got, "password++")
 	}
 }
 
