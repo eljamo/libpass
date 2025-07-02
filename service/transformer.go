@@ -219,6 +219,28 @@ func (s *DefaultTransformerService) lowerVowelUpperConsonant(slice []string) ([]
 	return result, nil
 }
 
+// isUpper checks if all characters in a string are uppercase.
+func isUpper(s string) bool {
+	for _, r := range s {
+		if unicode.IsLetter(r) && !unicode.IsUpper(r) {
+			return false
+		}
+	}
+	return true
+}
+
+// isLower checks if all characters in a string are lowercase.
+func isLower(s string) bool {
+	for _, r := range s {
+		if unicode.IsLetter(r) && !unicode.IsLower(r) {
+			return false
+		}
+	}
+	return true
+}
+
+// random applies random casing to each element of the slice and ensures that
+// at least one word is uppercase and one word is lowercase.
 func (s *DefaultTransformerService) random(slice []string) ([]string, error) {
 	for i, w := range slice {
 		r, err := s.rngSvc.Generate()
@@ -226,10 +248,42 @@ func (s *DefaultTransformerService) random(slice []string) ([]string, error) {
 			return nil, fmt.Errorf("failed to generate random number for random case: %w", err)
 		}
 
+		// Randomly convert words to uppercase or lowercase
 		if r%2 == 0 {
 			slice[i] = strings.ToUpper(w)
 		} else {
 			slice[i] = strings.ToLower(w)
+		}
+	}
+
+	// Check if slice has both upper and lower case words
+	hasUpper := false
+	hasLower := false
+
+	for _, w := range slice {
+		if isUpper(w) {
+			hasUpper = true
+		}
+		if isLower(w) {
+			hasLower = true
+		}
+	}
+
+	// If either uppercase or lowercase is missing, adjust one random element
+	if !hasUpper || !hasLower {
+		r, err := s.rngSvc.Generate()
+		if err != nil {
+			return nil, fmt.Errorf("failed to generate random number for random case adjustment: %w", err)
+		}
+
+		randomIndex := r % len(slice)
+
+		if !hasUpper {
+			// Ensure at least one word is uppercase
+			slice[randomIndex] = strings.ToUpper(slice[randomIndex])
+		} else if !hasLower {
+			// Ensure at least one word is lowercase
+			slice[randomIndex] = strings.ToLower(slice[randomIndex])
 		}
 	}
 
