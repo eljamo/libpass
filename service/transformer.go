@@ -240,6 +240,10 @@ func isLower(s string) bool {
 }
 
 func (s *DefaultTransformerService) applyRandomCasing(slice []string) error {
+	if len(slice) == 0 {
+		return nil
+	}
+
 	for i, w := range slice {
 		r, err := s.rngSvc.Generate()
 		if err != nil {
@@ -256,6 +260,10 @@ func (s *DefaultTransformerService) applyRandomCasing(slice []string) error {
 }
 
 func (s *DefaultTransformerService) ensureMixedCasing(slice []string) error {
+	if len(slice) == 0 {
+		return nil
+	}
+
 	hasUpper := false
 	hasLower := false
 
@@ -286,7 +294,15 @@ func (s *DefaultTransformerService) ensureMixedCasing(slice []string) error {
 	return nil
 }
 
+// random applies random casing to each element of the slice. But ensures that
+// the slice contains at least one uppercase and lowercase word
+//
+// Example Output: string[]{"hello", "WORLD"}
 func (s *DefaultTransformerService) random(slice []string) ([]string, error) {
+	if len(slice) == 0 {
+		return slice, nil // Return the empty slice directly
+	}
+
 	// Apply random casing to the slice
 	if err := s.applyRandomCasing(slice); err != nil {
 		return nil, err

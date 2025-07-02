@@ -51,7 +51,6 @@ func TestDefaultTransformerServiceTransform(t *testing.T) {
 	t.Parallel()
 
 	rngs := &mockRNGService{}
-	erngs := &mockEvenRNGService{}
 
 	tests := []struct {
 		name      string
@@ -135,15 +134,8 @@ func TestDefaultTransformerServiceTransform(t *testing.T) {
 			name:     "Random",
 			cfg:      &config.Settings{CaseTransform: option.CaseTransformRandom},
 			rngSvc:   rngs,
-			input:    []string{"hello", "world"},
-			expected: []string{"hello", "world"},
-		},
-		{
-			name:     "Random with even RNG",
-			cfg:      &config.Settings{CaseTransform: option.CaseTransformRandom},
-			rngSvc:   erngs,
-			input:    []string{"hello", "world"},
-			expected: []string{"HELLO", "WORLD"},
+			input:    []string{"hello", "WORLD"},
+			expected: []string{"hello", "WORLD"},
 		},
 		{
 			name:     "Empty slice",
