@@ -239,24 +239,23 @@ func isLower(s string) bool {
 	return true
 }
 
-// random applies random casing to each element of the slice and ensures that
-// at least one word is uppercase and one word is lowercase.
-func (s *DefaultTransformerService) random(slice []string) ([]string, error) {
+func (s *DefaultTransformerService) applyRandomCasing(slice []string) error {
 	for i, w := range slice {
 		r, err := s.rngSvc.Generate()
 		if err != nil {
-			return nil, fmt.Errorf("failed to generate random number for random case: %w", err)
+			return fmt.Errorf("failed to generate random number for random case: %w", err)
 		}
 
-		// Randomly convert words to uppercase or lowercase
 		if r%2 == 0 {
 			slice[i] = strings.ToUpper(w)
 		} else {
 			slice[i] = strings.ToLower(w)
 		}
 	}
+	return nil
+}
 
-	// Check if slice has both upper and lower case words
+func (s *DefaultTransformerService) ensureMixedCasing(slice []string) error {
 	hasUpper := false
 	hasLower := false
 
@@ -269,22 +268,33 @@ func (s *DefaultTransformerService) random(slice []string) ([]string, error) {
 		}
 	}
 
-	// If either uppercase or lowercase is missing, adjust one random element
 	if !hasUpper || !hasLower {
 		r, err := s.rngSvc.Generate()
 		if err != nil {
-			return nil, fmt.Errorf("failed to generate random number for random case adjustment: %w", err)
+			return fmt.Errorf("failed to generate random number for random case adjustment: %w", err)
 		}
 
 		randomIndex := r % len(slice)
 
 		if !hasUpper {
-			// Ensure at least one word is uppercase
 			slice[randomIndex] = strings.ToUpper(slice[randomIndex])
 		} else if !hasLower {
-			// Ensure at least one word is lowercase
 			slice[randomIndex] = strings.ToLower(slice[randomIndex])
 		}
+	}
+
+	return nil
+}
+
+func (s *DefaultTransformerService) random(slice []string) ([]string, error) {
+	// Apply random casing to the slice
+	if err := s.applyRandomCasing(slice); err != nil {
+		return nil, err
+	}
+
+	// Ensure the slice has both uppercase and lowercase words
+	if err := s.ensureMixedCasing(slice); err != nil {
+		return nil, err
 	}
 
 	return slice, nil
