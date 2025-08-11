@@ -6,5 +6,5 @@ toolchain go1.24.4
 
 require (
 	github.com/google/go-cmp v0.7.0
-	golang.org/x/text v0.27.0
+	golang.org/x/text v0.28.0
 )
