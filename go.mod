@@ -4,5 +4,5 @@ go 1.24.4
 
 require (
 	github.com/google/go-cmp v0.7.0
-	golang.org/x/text v0.31.0
+	golang.org/x/text v0.32.0
 )
