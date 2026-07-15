@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/eljamo/libpass/v7/config"
-	"github.com/eljamo/libpass/v7/service"
+	"github.com/eljamo/libpass/v8/config"
+	"github.com/eljamo/libpass/v8/service"
 )
 
 func main() {

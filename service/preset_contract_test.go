@@ -4,9 +4,9 @@ import (
 	"testing"
 	"unicode/utf8"
 
-	"github.com/eljamo/libpass/v7/asset"
-	"github.com/eljamo/libpass/v7/config"
-	"github.com/eljamo/libpass/v7/config/option"
+	"github.com/eljamo/libpass/v8/asset"
+	"github.com/eljamo/libpass/v8/config"
+	"github.com/eljamo/libpass/v8/config/option"
 )
 
 const presetContractIterations = 25

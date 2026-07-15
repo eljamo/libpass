@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"unicode/utf8"
 
-	"github.com/eljamo/libpass/v7/config"
-	"github.com/eljamo/libpass/v7/config/option"
-	"github.com/eljamo/libpass/v7/internal/validator"
+	"github.com/eljamo/libpass/v8/config"
+	"github.com/eljamo/libpass/v8/config/option"
+	"github.com/eljamo/libpass/v8/internal/validator"
 )
 
 // Defines the interface for a service that can separate elements of a string

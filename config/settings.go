@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"slices"
 
-	"github.com/eljamo/libpass/v7/config/option"
-	"github.com/eljamo/libpass/v7/internal/merger"
+	"github.com/eljamo/libpass/v8/config/option"
+	"github.com/eljamo/libpass/v8/internal/merger"
 )
 
 type Settings struct {

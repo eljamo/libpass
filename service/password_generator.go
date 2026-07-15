@@ -3,8 +3,8 @@ package service
 import (
 	"fmt"
 
-	"github.com/eljamo/libpass/v7/config"
-	"github.com/eljamo/libpass/v7/config/option"
+	"github.com/eljamo/libpass/v8/config"
+	"github.com/eljamo/libpass/v8/config/option"
 )
 
 // PasswordGeneratorService defines the interface for a service that generates

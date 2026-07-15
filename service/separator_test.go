@@ -4,8 +4,8 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/eljamo/libpass/v7/config"
-	"github.com/eljamo/libpass/v7/config/option"
+	"github.com/eljamo/libpass/v8/config"
+	"github.com/eljamo/libpass/v8/config/option"
 )
 
 func TestNewSeparatorService(t *testing.T) {

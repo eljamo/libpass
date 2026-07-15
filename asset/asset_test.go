@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/eljamo/libpass/v7/config/option"
+	"github.com/eljamo/libpass/v8/config/option"
 	"github.com/google/go-cmp/cmp"
 )
 

@@ -3,9 +3,9 @@ package service
 import (
 	"fmt"
 
-	"github.com/eljamo/libpass/v7/asset"
-	"github.com/eljamo/libpass/v7/config"
-	"github.com/eljamo/libpass/v7/config/option"
+	"github.com/eljamo/libpass/v8/asset"
+	"github.com/eljamo/libpass/v8/config"
+	"github.com/eljamo/libpass/v8/config/option"
 )
 
 // Defines the interface for a service that extracts words from word lists

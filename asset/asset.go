@@ -13,7 +13,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/eljamo/libpass/v7/config/option"
+	"github.com/eljamo/libpass/v8/config/option"
 )
 
 //go:embed preset/* word_list/*

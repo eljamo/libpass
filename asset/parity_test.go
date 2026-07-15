@@ -4,7 +4,7 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/eljamo/libpass/v7/config/option"
+	"github.com/eljamo/libpass/v8/config/option"
 )
 
 // These tests pin the three places a word list or preset must be registered
