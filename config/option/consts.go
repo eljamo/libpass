@@ -34,6 +34,7 @@ const (
 	WordListPokemon       string = "POKEMON"
 	WordListStarTrek      string = "STAR_TREK"
 	WordListStarWars      string = "STAR_WARS"
+	WordListSunborn       string = "SUNBORN"
 )
 
 // Preset constant

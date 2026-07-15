@@ -46,6 +46,13 @@ paths = [
   'examples$'
 ]
 
+[[linters.exclusions.rules]]
+path = '_test\.go'
+linters = [
+  'gocognit',
+  'goconst'
+]
+
 [formatters]
 enable = [
   'gci',

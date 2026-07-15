@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"unicode/utf8"
 
 	"github.com/eljamo/libpass/v7/config"
 	"github.com/eljamo/libpass/v7/config/option"
@@ -76,7 +77,7 @@ func (s *DefaultSeparatorService) getSeparatorCharacter() (string, error) {
 // valid random character from the alphabet. Returns an error if the
 // configuration is invalid.
 func (s *DefaultSeparatorService) validate() error {
-	if s.cfg.SeparatorCharacter != option.SeparatorCharacterRandom && len(s.cfg.SeparatorCharacter) > 1 {
+	if s.cfg.SeparatorCharacter != option.SeparatorCharacterRandom && utf8.RuneCountInString(s.cfg.SeparatorCharacter) > 1 {
 		return fmt.Errorf("%s must be a single character if specified", option.ConfigKeySeparatorCharacter)
 	}
 

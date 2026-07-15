@@ -68,10 +68,30 @@ func TestNewPaddingService(t *testing.T) {
 			cfg:     &config.Settings{PadToLength: -1, PaddingType: option.PaddingTypeAdaptive},
 			wantErr: true,
 		},
+		{
+			name: "Valid configuration - single multi-byte rune padding character",
+			cfg: &config.Settings{
+				PaddingDigitsBefore: 2, PaddingDigitsAfter: 2, PaddingCharacter: "€",
+				SymbolAlphabet: []string{"!", "@", "#", "$", "%"}, PaddingType: option.PaddingTypeFixed,
+			},
+			wantErr: false,
+		},
+		{
+			name: "Valid configuration - multi-byte rune symbol alphabet",
+			cfg: &config.Settings{
+				PaddingCharacter: option.PaddingCharacterRandom, SymbolAlphabet: []string{"€", "§"},
+				PaddingType: option.PaddingTypeFixed,
+			},
+			wantErr: false,
+		},
+		{
+			name:    "Invalid configuration - two-rune padding character",
+			cfg:     &config.Settings{PaddingCharacter: "€€", PaddingType: option.PaddingTypeFixed},
+			wantErr: true,
+		},
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			_, err := NewPaddingService(tt.cfg, mockRNGService)
@@ -145,7 +165,6 @@ func TestDigits(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
@@ -189,7 +208,6 @@ func TestGenerateRandomDigits(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
@@ -264,7 +282,6 @@ func TestRemoveEdgeSeparatorCharacter(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
@@ -320,7 +337,6 @@ func TestRemoveRandomEdgeSeparatorCharacter(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
@@ -392,7 +408,6 @@ func TestSymbols(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
@@ -530,7 +545,6 @@ func TestAdaptive(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 

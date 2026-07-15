@@ -50,6 +50,7 @@ func NewTransformerService(cfg *config.Settings, rngSvc RNGService) (*DefaultTra
 // Transform takes a slice of strings and transforms each element
 // according to the configured transformation rule.
 // Returns the transformed slice or an error if the transformation fails.
+// The input slice is not modified; a transformed copy is returned.
 //
 // Transform Types:
 //   - Alternate
@@ -63,6 +64,7 @@ func NewTransformerService(cfg *config.Settings, rngSvc RNGService) (*DefaultTra
 //   - Sentence
 //   - Upper
 func (s *DefaultTransformerService) Transform(slice []string) ([]string, error) {
+	slice = slices.Clone(slice)
 	switch s.cfg.CaseTransform {
 	case option.CaseTransformAlternate:
 		return s.alternate(slice), nil

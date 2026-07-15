@@ -37,11 +37,19 @@ func TestHasElementWithLengthGreaterThanOne(t *testing.T) {
 			s:    []string{"abc", "def", "ghi"},
 			want: true,
 		},
+		{
+			name: "Single multi-byte rune elements",
+			s:    []string{"€", "§"},
+			want: false,
+		},
+		{
+			name: "Two multi-byte runes in one element",
+			s:    []string{"€€"},
+			want: true,
+		},
 	}
 
 	for _, tt := range tests {
-		tt := tt
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
@@ -89,8 +97,6 @@ func TestIsElementInSlice(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
@@ -125,8 +131,6 @@ func TestIsElementInSlice(t *testing.T) {
 		}
 
 		for _, st := range strTests {
-			st := st
-
 			t.Run(st.name, func(t *testing.T) {
 				t.Parallel()
 

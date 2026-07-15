@@ -1,8 +1,13 @@
 package validator
 
+import (
+	"slices"
+	"unicode/utf8"
+)
+
 func HasElementWithLengthGreaterThanOne(s []string) bool {
 	for _, str := range s {
-		if len(str) > 1 {
+		if utf8.RuneCountInString(str) > 1 {
 			return true
 		}
 	}
@@ -11,11 +16,5 @@ func HasElementWithLengthGreaterThanOne(s []string) bool {
 }
 
 func IsElementInSlice[T comparable](s []T, e T) bool {
-	for _, a := range s {
-		if a == e {
-			return true
-		}
-	}
-
-	return false
+	return slices.Contains(s, e)
 }

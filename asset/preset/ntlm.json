@@ -37,6 +37,5 @@
         "?"
     ],
     "padding_characters_before": 0,
-    "padding_characters_after": 1,
-    "random_increment": "AUTO"
+    "padding_characters_after": 1
 }

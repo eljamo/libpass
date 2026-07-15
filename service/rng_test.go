@@ -26,7 +26,7 @@ func (s *mockRNGService) GenerateSlice(length int) ([]int, error) {
 
 func (s *mockRNGService) GenerateSliceWithMax(length, max int) ([]int, error) {
 	slice := make([]int, length)
-	for i := 0; i < length; i++ {
+	for i := range length {
 		slice[i] = 2
 	}
 
@@ -53,7 +53,7 @@ func (s *mockEvenRNGService) GenerateSlice(length int) ([]int, error) {
 
 func (s *mockEvenRNGService) GenerateSliceWithMax(length, max int) ([]int, error) {
 	slice := make([]int, length)
-	for i := 0; i < length; i++ {
+	for i := range length {
 		slice[i] = 2
 	}
 
@@ -99,7 +99,6 @@ func TestRNGGenerateWithMax(t *testing.T) {
 	rngSvc := NewRNGService()
 
 	for _, tc := range tests {
-		tc := tc
 		t.Run(tc.name, createTestFunc(tc, rngSvc))
 	}
 }
@@ -191,8 +190,6 @@ func TestGenerateSliceWithMax(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt // capture range variable
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
@@ -254,8 +251,6 @@ func TestGenerateSlice(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt // capture range variable
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
@@ -276,7 +271,7 @@ func TestGenerateDigit(t *testing.T) {
 
 	rngSvc := NewRNGService()
 
-	for i := 0; i < 100; i++ {
+	for range 100 {
 		digit, err := rngSvc.GenerateDigit()
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)

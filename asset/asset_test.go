@@ -3,6 +3,7 @@ package asset
 import (
 	"embed"
 	"errors"
+	"strings"
 	"testing"
 
 	"github.com/eljamo/libpass/v7/config/option"
@@ -28,7 +29,6 @@ func TestKeyToFile(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.key, func(t *testing.T) {
 			t.Parallel()
 			got, ok := keyToFile(tt.key, tt.fileType)
@@ -78,7 +78,6 @@ func TestLoadJSONFileData(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			got, err := loadJSONFileData(tt.filePath, tt.readerFunc)
@@ -121,6 +120,14 @@ func TestReadAndFilterWords(t *testing.T) {
 			wantErr:  false,
 		},
 		{
+			name:     "Multi-byte word measured in runes, not bytes",
+			filePath: "test_data/words.txt",
+			minLen:   8,
+			maxLen:   8,
+			want:     []string{"dernière"},
+			wantErr:  false,
+		},
+		{
 			name:     "File does not exist",
 			filePath: "test_data/nonexistent.txt",
 			minLen:   3,
@@ -131,7 +138,6 @@ func TestReadAndFilterWords(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			got, err := readAndFilterWords(tt.filePath, tt.minLen, tt.maxLen, testFiles)
@@ -179,7 +185,6 @@ func TestLoadJSONFile(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
@@ -242,7 +247,6 @@ func TestGetJSONPreset(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			got, err := GetJSONPreset(tt.key)
@@ -255,4 +259,34 @@ func TestGetJSONPreset(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestGetWordList(t *testing.T) {
+	t.Parallel()
+
+	t.Run("invalid key", func(t *testing.T) {
+		t.Parallel()
+		if _, err := GetWordList("invalid"); !errors.Is(err, ErrInvalidWordList) {
+			t.Errorf("GetWordList(invalid) error = %v, want ErrInvalidWordList", err)
+		}
+	})
+
+	t.Run("no empty or CR-terminated words", func(t *testing.T) {
+		t.Parallel()
+		words, err := GetWordList(option.WordListEN)
+		if err != nil {
+			t.Fatalf("GetWordList(EN) returned error: %v", err)
+		}
+		if len(words) == 0 {
+			t.Fatal("GetWordList(EN) returned no words")
+		}
+		for i, w := range words {
+			if w == "" {
+				t.Fatalf("GetWordList(EN) returned empty word at index %d", i)
+			}
+			if strings.ContainsRune(w, '\r') {
+				t.Fatalf("GetWordList(EN) word %q at index %d contains carriage return", w, i)
+			}
+		}
+	})
 }

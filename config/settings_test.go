@@ -2,8 +2,11 @@ package config
 
 import (
 	"encoding/json"
+	"slices"
+	"strings"
 	"testing"
 
+	"github.com/eljamo/libpass/v7/asset"
 	"github.com/eljamo/libpass/v7/config/option"
 	"github.com/google/go-cmp/cmp"
 )
@@ -40,7 +43,6 @@ func TestDefaultSettings(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
@@ -57,10 +59,12 @@ func TestNew(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name    string
-		input   []map[string]any
-		want    *Settings
-		wantErr bool
+		name string
+		// wantErrMsg, when set, must appear in the returned error's message
+		wantErrMsg string
+		input      []map[string]any
+		want       *Settings
+		wantErr    bool
 	}{
 		{
 			name:    "Default settings when no input maps provided",
@@ -103,10 +107,27 @@ func TestNew(t *testing.T) {
 			want:    nil,
 			wantErr: true,
 		},
+		{
+			name: "Unknown key results in error naming the key",
+			input: []map[string]any{
+				{"padding_charcter": "!"},
+			},
+			want:       nil,
+			wantErr:    true,
+			wantErrMsg: "padding_charcter",
+		},
+		{
+			name: "Unknown key mixed with known keys results in error",
+			input: []map[string]any{
+				{"num_words": 4, "not_a_real_key": true},
+			},
+			want:       nil,
+			wantErr:    true,
+			wantErrMsg: "not_a_real_key",
+		},
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			got, err := New(tt.input...)
@@ -114,8 +135,50 @@ func TestNew(t *testing.T) {
 				t.Errorf("New() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
+			if tt.wantErrMsg != "" && !strings.Contains(err.Error(), tt.wantErrMsg) {
+				t.Errorf("New() error = %v, want error containing %q", err, tt.wantErrMsg)
+			}
 			if !cmp.Equal(got, tt.want) {
 				t.Errorf("New() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+// Deliberately not parallel: it reads a package-level slice, and if the
+// mutation bug it pins ever returns, a parallel run would surface as a race
+// report rather than this test's diff.
+func TestNewDoesNotMutateDefaultSpecialCharacters(t *testing.T) {
+	want := slices.Clone(option.DefaultSpecialCharacters)
+
+	// APPLEID carries its own separator_alphabet and symbol_alphabet, which is
+	// what a decode into a shared backing array would write through to the
+	// package-level slice.
+	m, err := asset.GetJSONPreset(option.PresetAppleID)
+	if err != nil {
+		t.Fatalf("GetJSONPreset(%s) returned error: %v", option.PresetAppleID, err)
+	}
+	if _, err := New(m); err != nil {
+		t.Fatalf("New() returned error: %v", err)
+	}
+
+	if diff := cmp.Diff(want, option.DefaultSpecialCharacters); diff != "" {
+		t.Errorf("New() mutated option.DefaultSpecialCharacters (-want +got):\n%s", diff)
+	}
+}
+
+func TestNewAcceptsAllEmbeddedPresets(t *testing.T) {
+	t.Parallel()
+
+	for _, preset := range option.Presets {
+		t.Run(preset, func(t *testing.T) {
+			t.Parallel()
+			m, err := asset.GetJSONPreset(preset)
+			if err != nil {
+				t.Fatalf("GetJSONPreset(%s) returned error: %v", preset, err)
+			}
+			if _, err := New(m); err != nil {
+				t.Errorf("New() rejected embedded preset %s: %v", preset, err)
 			}
 		})
 	}
@@ -148,7 +211,6 @@ func TestMergeMaps(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			gotBytes, err := mergeMaps(tt.input...)
@@ -214,7 +276,6 @@ func TestJsonToSettings(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			got := &Settings{}
@@ -254,7 +315,6 @@ func TestMapToJSON(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			got, err := mapToJSON(tt.input)

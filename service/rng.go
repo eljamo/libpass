@@ -80,7 +80,7 @@ func (s *DefaultRNGService) GenerateSliceWithMax(length int, max int) ([]int, er
 	}
 
 	slice := make([]int, length)
-	for i := 0; i < length; i++ {
+	for i := range length {
 		n, err := s.GenerateWithMax(max)
 		if err != nil {
 			return nil, fmt.Errorf("failed to generate random number for slice at index %d: %w", i, err)

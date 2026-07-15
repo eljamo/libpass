@@ -32,12 +32,12 @@ var SeparatorCharacterOptions = append([]string{SeparatorCharacterRandom}, Defau
 var WordLists = []string{
 	WordList40k, WordListAll, WordListDoctorWho, WordListEN, WordListENSmall,
 	WordListGameOfThrones, WordListHarryPotter, WordListMiddleEarth,
-	WordListStarTrek, WordListStarWars,
+	WordListPokemon, WordListStarTrek, WordListStarWars, WordListSunborn,
 }
 
 var WordListDescriptionMap = map[string]string{
 	WordList40k:           "A Warhammer 40k word list (8600+ words)",
-	WordListAll:           "A combination of all the word lists (47600+ words)",
+	WordListAll:           "A combination of all the word lists (60100+ words)",
 	WordListDoctorWho:     "A Doctor Who word list (11300+ words)",
 	WordListEN:            "A list of English words (14900+ words)",
 	WordListENSmall:       "A small list of English words (8600+ words)",
@@ -47,6 +47,7 @@ var WordListDescriptionMap = map[string]string{
 	WordListPokemon:       "A Pokemon word list (9000+ words)",
 	WordListStarTrek:      "A Star Trek word list (8000+ words)",
 	WordListStarWars:      "A Star Wars word list (12000+ words)",
+	WordListSunborn:       "A Sunborn word list (1000+ words)",
 }
 
 var PresetDescriptionMap = map[string]string{

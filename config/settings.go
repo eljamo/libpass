@@ -1,8 +1,10 @@
 package config
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"slices"
 
 	"github.com/eljamo/libpass/v7/config/option"
 	"github.com/eljamo/libpass/v7/internal/merger"
@@ -59,6 +61,10 @@ const (
 
 // DefaultSettings returns a new Settings struct with the default values set.
 // This is used when no settings are given to the New function.
+//
+// The alphabet slices are cloned: a JSON decode into a non-nil slice reuses its
+// backing array, so sharing option.DefaultSpecialCharacters here would let any
+// preset carrying its own alphabet overwrite that package-level slice in place.
 func DefaultSettings() *Settings {
 	return &Settings{
 		CaseTransform:           option.CaseTransformRandom,
@@ -72,9 +78,9 @@ func DefaultSettings() *Settings {
 		PaddingType:             option.PaddingTypeFixed,
 		PadToLength:             defaultPadToLength,
 		Preset:                  option.PresetDefault,
-		SeparatorAlphabet:       option.DefaultSpecialCharacters,
+		SeparatorAlphabet:       slices.Clone(option.DefaultSpecialCharacters),
 		SeparatorCharacter:      option.SeparatorCharacterRandom,
-		SymbolAlphabet:          option.DefaultSpecialCharacters,
+		SymbolAlphabet:          slices.Clone(option.DefaultSpecialCharacters),
 		WordLengthMax:           defaultWordLengthMax,
 		WordLengthMin:           defaultWordLengthMin,
 		WordList:                option.WordListEN,
@@ -97,7 +103,9 @@ func mergeMaps(ms ...map[string]any) ([]byte, error) {
 }
 
 func jsonToSettings(s *Settings, js []byte) error {
-	if err := json.Unmarshal(js, &s); err != nil {
+	dec := json.NewDecoder(bytes.NewReader(js))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(s); err != nil {
 		return fmt.Errorf("failed to unmarshal JSON: %w", err)
 	}
 

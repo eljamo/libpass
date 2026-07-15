@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"reflect"
+	"slices"
 	"testing"
 
 	"github.com/eljamo/libpass/v7/config"
@@ -35,7 +36,6 @@ func TestNewTransformerService(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			cfg := &config.Settings{CaseTransform: tt.caseTransform}
@@ -154,7 +154,6 @@ func TestDefaultTransformerServiceTransform(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
@@ -193,7 +192,6 @@ func TestDefaultTransformerServiceValidate(t *testing.T) {
 	}
 
 	for _, validTransform := range validCaseTransforms {
-		validTransform := validTransform
 		t.Run(fmt.Sprintf("Valid case transform: %s", validTransform), func(t *testing.T) {
 			t.Parallel()
 
@@ -216,4 +214,32 @@ func TestDefaultTransformerServiceValidate(t *testing.T) {
 			t.Error("validate() with invalid case transform did not return an error")
 		}
 	})
+}
+
+func TestTransformDoesNotMutateInput(t *testing.T) {
+	t.Parallel()
+
+	rngs := &mockRNGService{}
+
+	for _, transform := range option.TransformTypes {
+		t.Run(transform, func(t *testing.T) {
+			t.Parallel()
+
+			input := []string{"Hello", "wOrLd", "TEST"}
+			original := slices.Clone(input)
+
+			svc, err := NewTransformerService(&config.Settings{CaseTransform: transform}, rngs)
+			if err != nil {
+				t.Fatalf("unexpected error with service init: %s", err)
+			}
+
+			if _, err := svc.Transform(input); err != nil {
+				t.Fatalf("Transform() returned error: %v", err)
+			}
+
+			if !reflect.DeepEqual(input, original) {
+				t.Errorf("Transform(%s) mutated its input: got %v, want %v", transform, input, original)
+			}
+		})
+	}
 }

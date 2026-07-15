@@ -7,9 +7,11 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"math"
 	"os"
 	"path"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/eljamo/libpass/v7/config/option"
 )
@@ -42,6 +44,7 @@ var fileMap = map[string]map[string]string{
 		option.WordListPokemon:       "pokemon.txt",
 		option.WordListStarTrek:      "star_trek.txt",
 		option.WordListStarWars:      "star_wars.txt",
+		option.WordListSunborn:       "sunborn.txt",
 	},
 }
 
@@ -89,24 +92,19 @@ func getWordListFilePath(key string) (string, error) {
 }
 
 // GetWordList retrieves a list of words from an embedded file identified by the
-// given key. The method reads the file content, splits it by newline characters
-// and returns the result as a slice of strings. If the file cannot be found or
-// read, an error is returned.
+// given key. The method returns the file's non-empty lines as a slice of
+// strings, with any carriage returns from CRLF endings stripped. If the file
+// cannot be found or read, an error is returned.
 func GetWordList(key string) ([]string, error) {
 	filePath, err := getWordListFilePath(key)
 	if err != nil {
 		return nil, err
 	}
 
-	data, err := files.ReadFile(filePath)
-	if err != nil {
-		return nil, errors.Join(ErrReadFile, fmt.Errorf("failed to read embedded text file (%s): %w", filePath, err))
-	}
-
-	return strings.Split(string(data), "\n"), nil
+	return readAndFilterWords(filePath, 1, math.MaxInt, files)
 }
 
-// readAndFilterWords reads from an io.Reader, and filters the words based on the specified minimum and maximum length.
+// readAndFilterWords reads from an io.Reader, and filters the words based on the specified minimum and maximum length, measured in runes.
 func readAndFilterWords(filePath string, minLen int, maxLen int, fs embed.FS) ([]string, error) {
 	file, err := fs.Open(filePath)
 	if err != nil {
@@ -122,7 +120,8 @@ func readAndFilterWords(filePath string, minLen int, maxLen int, fs embed.FS) ([
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := scanner.Text()
-		if len(line) >= minLen && len(line) <= maxLen {
+		wordLen := utf8.RuneCountInString(line)
+		if wordLen >= minLen && wordLen <= maxLen {
 			wl = append(wl, line)
 		}
 	}
@@ -136,7 +135,8 @@ func readAndFilterWords(filePath string, minLen int, maxLen int, fs embed.FS) ([
 
 // GetFilteredWordList reads a word list from an embedded file identified by the
 // given key, and filters the words based on the specified minimum and maximum
-// length. It returns a slice of strings that meet the length criteria. If the
+// length, measured in runes. It returns a slice of strings that meet the
+// length criteria. If the
 // file cannot be opened or read, or if an error occurs during scanning, an
 // error is returned.
 func GetFilteredWordList(key string, minLen int, maxLen int) ([]string, error) {

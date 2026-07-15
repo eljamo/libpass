@@ -88,7 +88,7 @@ func (s *DefaultPaddingService) digits(slice []string) ([]string, error) {
 // generated digits as strings or an error if the generation fails.
 func (s *DefaultPaddingService) generateRandomDigits(num int) ([]string, error) {
 	digits := make([]string, 0, num)
-	for i := 0; i < num; i++ {
+	for range num {
 		num, err := s.rngSvc.GenerateDigit()
 		if err != nil {
 			return nil, err
@@ -107,7 +107,7 @@ func (s *DefaultPaddingService) removeEdgeSeparatorCharacter(slice []string) []s
 		return slice
 	}
 
-	if s.cfg.SeparatorCharacter == option.PaddingCharacterRandom {
+	if s.cfg.SeparatorCharacter == option.SeparatorCharacterRandom {
 		return s.removeRandomEdgeSeparatorCharacter(slice)
 	}
 
@@ -206,7 +206,7 @@ func (s *DefaultPaddingService) adaptive(pw string, char string) string {
 // Checks the service's configuration for any invalid values. It ensures the
 // integrity of the padding settings before processing the padding operations.
 func (s *DefaultPaddingService) validate() error {
-	if s.cfg.PaddingType != option.PaddingTypeNone && s.cfg.PaddingCharacter != option.PaddingCharacterRandom && len(s.cfg.PaddingCharacter) > 1 {
+	if s.cfg.PaddingType != option.PaddingTypeNone && s.cfg.PaddingCharacter != option.PaddingCharacterRandom && utf8.RuneCountInString(s.cfg.PaddingCharacter) > 1 {
 		return fmt.Errorf("%s must be a single character if specified", option.ConfigKeyPaddingCharacter)
 	}
 

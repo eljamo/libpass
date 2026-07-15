@@ -27,3 +27,12 @@ go.work
 
 # GoLand
 .idea/
+
+# Profane List, used for filtering out profrane words when creating a new word list.
+asset/word_list/profanity.txt
+
+# AI Tooling
+.claude/
+.kilo/
+.agents/
+plans/

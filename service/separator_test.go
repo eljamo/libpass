@@ -44,10 +44,24 @@ func TestNewSeparatorService(t *testing.T) {
 			cfg:     &config.Settings{SeparatorCharacter: option.SeparatorCharacterRandom, SeparatorAlphabet: []string{"aaa"}},
 			wantErr: true,
 		},
+		{
+			name:    "Valid configuration - single multi-byte rune separator character",
+			cfg:     &config.Settings{SeparatorCharacter: "€", SeparatorAlphabet: []string{"!", "@", "#", "$", "%"}},
+			wantErr: false,
+		},
+		{
+			name:    "Valid configuration - multi-byte rune separator alphabet",
+			cfg:     &config.Settings{SeparatorCharacter: option.SeparatorCharacterRandom, SeparatorAlphabet: []string{"€", "§"}},
+			wantErr: false,
+		},
+		{
+			name:    "Invalid configuration - two-rune separator character",
+			cfg:     &config.Settings{SeparatorCharacter: "€€"},
+			wantErr: true,
+		},
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			_, err := NewSeparatorService(tt.cfg, mockRNGService)
@@ -105,7 +119,6 @@ func TestSeparatorServiceSeparate(t *testing.T) {
 
 	// Run test cases
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			runSeparatorServiceSeparateTest(t, tt.cfg, tt.rngSvc, tt.input, tt.expected, tt.expectErr)
