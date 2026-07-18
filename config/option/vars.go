@@ -37,17 +37,17 @@ var WordLists = []string{
 
 var WordListDescriptionMap = map[string]string{
 	WordList40k:           "A Warhammer 40k word list (8600+ words)",
-	WordListAll:           "A combination of all the word lists (60100+ words)",
+	WordListAll:           "A combination of all the word lists (60000+ words)",
 	WordListDoctorWho:     "A Doctor Who word list (11300+ words)",
-	WordListEN:            "A list of English words (14900+ words)",
+	WordListEN:            "A list of English words (14800+ words)",
 	WordListENSmall:       "A small list of English words (8600+ words)",
 	WordListGameOfThrones: "A Game of Thrones word list (8200+ words)",
-	WordListHarryPotter:   "A Harry Potter word list (12500+ words)",
+	WordListHarryPotter:   "A Harry Potter word list (12600+ words)",
 	WordListMiddleEarth:   "A Middle Earth word list containing words from The Hobbit, Lord of the Rings, The Silmarillion, and more (15400+ words)",
 	WordListPokemon:       "A Pokemon word list (9000+ words)",
 	WordListStarTrek:      "A Star Trek word list (8000+ words)",
-	WordListStarWars:      "A Star Wars word list (12000+ words)",
-	WordListSunborn:       "A Sunborn word list (1000+ words)",
+	WordListStarWars:      "A Star Wars word list (12100+ words)",
+	WordListSunborn:       "A Sunborn word list (31300+ words)",
 }
 
 var PresetDescriptionMap = map[string]string{

@@ -875,7 +875,6 @@ association
 associations
 associazione
 assorted
-asssociated
 assuage
 assuaged
 assume
@@ -2324,7 +2323,6 @@ challenge
 challenged
 challenges
 challenging
-challlenge
 chamber
 chambers
 champ
@@ -2344,7 +2342,6 @@ channel
 channelled
 channelling
 channels
-channnel
 chant
 chanted
 chanting
@@ -5730,7 +5727,6 @@ fortinbras
 fortnight
 fortress
 fortresses
-fortresss
 forts
 fortunate
 fortunately
@@ -9275,7 +9271,6 @@ niece
 niekas
 nielluin
 nienna
-niggard
 nigh
 night
 nightfall
@@ -12767,7 +12762,6 @@ squinted
 squire
 squirrel
 squirrels
-sssh
 stab
 stabbed
 stabbing
